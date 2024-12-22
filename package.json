@@ -21,7 +21,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "prepublishOnly": "npm run build:all",
-    "release": "gh release create v$(node -p \"require('./package.json').version\") --generate-notes"
+    "release": "git tag v$(node -p \"require('./package.json').version\") && git push origin v$(node -p \"require('./package.json').version\") && gh release create v$(node -p \"require('./package.json').version\") --generate-notes"
   },
   "dependencies": {
     "fabric": "^5.3.0",
