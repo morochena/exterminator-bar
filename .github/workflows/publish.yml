@@ -23,7 +23,7 @@ jobs:
         run: npm test
 
       - name: Build
-        run: npm run build:all
+        run: npm run build
 
       - name: Publish to NPM
         run: npm publish
