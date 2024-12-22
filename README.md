@@ -38,10 +38,35 @@ pnpm add exterminator-bar
 
 ```html
 <!-- Using unpkg -->
-<script src="https://unpkg.com/exterminator-bar"></script>
+<script src="https://unpkg.com/exterminator-bar@0.1.4/dist/index.umd.js"></script>
 
 <!-- Using jsDelivr -->
-<script src="https://cdn.jsdelivr.net/npm/exterminator-bar"></script>
+<script src="https://cdn.jsdelivr.net/npm/exterminator-bar@0.1.4/dist/index.umd.js"></script>
+```
+
+Then initialize the widget:
+
+```html
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    if (typeof window.ExterminatorBar === 'undefined') {
+      console.error('ExterminatorBar failed to load');
+      return;
+    }
+
+    // Initialize using init function
+    window.ExterminatorBar.init({
+      callbacks: {
+        onSubmit: async (report) => {
+          console.log('Bug report submitted:', report);
+        },
+        onError: (error) => {
+          console.error('Error occurred:', error);
+        }
+      }
+    });
+  });
+</script>
 ```
 
 ## Usage
