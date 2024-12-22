@@ -16,7 +16,8 @@
     "build:types": "tsc --emitDeclarationOnly --outDir dist",
     "build:lib": "vite build",
     "build": "npm run build:lib && npm run build:types",
-    "release": "git tag v$(node -p \"require('./package.json').version\") && git push origin v$(node -p \"require('./package.json').version\") && gh release create v$(node -p \"require('./package.json').version\") --generate-notes"
+    "release": "git tag v$(node -p \"require('./package.json').version\") && git push origin v$(node -p \"require('./package.json').version\") && gh release create v$(node -p \"require('./package.json').version\") --generate-notes",
+    "test": "vitest run"
   },
   "dependencies": {
     "dom-to-image-more": "^3.5.0",
