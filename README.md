@@ -228,6 +228,32 @@ const bugReporter = new ExterminatorBar({
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
+## Releasing
+
+This package uses GitHub Actions for automated releases. To publish a new version:
+
+1. Update the version in `package.json`
+2. Create and push a new tag:
+   ```bash
+   git tag v1.0.0
+   git push origin v1.0.0
+   ```
+3. Create a new release on GitHub using the tag
+4. The GitHub Action will automatically:
+   - Run tests
+   - Build the package
+   - Publish to npm
+   - Publish to GitHub Packages
+
+### Setting up NPM Token
+
+To enable automated publishing, you need to add your NPM token to GitHub Secrets:
+
+1. Create an NPM access token with publish permissions
+2. Go to your GitHub repository settings
+3. Navigate to Secrets and Variables > Actions
+4. Add a new secret named `NPM_TOKEN` with your NPM access token
+
 ## License
 
 MIT License - see the [LICENSE](LICENSE) file for details.

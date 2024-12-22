@@ -37,16 +37,16 @@
     "screenshot",
     "annotation"
   ],
-  "author": "",
+  "author": "Marcus Orochena",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/exterminator-bar"
+    "url": "https://github.com/morochena/exterminator-bar"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/exterminator-bar/issues"
+    "url": "https://github.com/morochena/exterminator-bar/issues"
   },
-  "homepage": "https://github.com/yourusername/exterminator-bar#readme",
+  "homepage": "https://github.com/morochena/exterminator-bar#readme",
   "publishConfig": {
     "access": "public"
   }
