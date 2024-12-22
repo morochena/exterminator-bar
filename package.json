@@ -13,14 +13,9 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "build:types": "tsc --emitDeclarationOnly",
-    "build:all": "npm run build && npm run build:types",
-    "preview": "vite preview",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "prepublishOnly": "npm run build:all",
+    "build:types": "tsc --emitDeclarationOnly --outDir dist",
+    "build:lib": "vite build",
+    "build": "npm run build:lib && npm run build:types",
     "release": "git tag v$(node -p \"require('./package.json').version\") && git push origin v$(node -p \"require('./package.json').version\") && gh release create v$(node -p \"require('./package.json').version\") --generate-notes"
   },
   "dependencies": {

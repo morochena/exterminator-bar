@@ -6,7 +6,7 @@ export interface WidgetConfig {
         onError?: (error: Error) => void;
     };
 }
-export declare class BugToolbar {
+declare class BugToolbarInternal {
     private config?;
     private toolbar;
     private annotator;
@@ -29,4 +29,5 @@ export declare class BugToolbar {
     private showAnnotator;
     private createAnnotationButton;
 }
-export declare function init(config?: WidgetConfig): void;
+export declare function init(config?: WidgetConfig): BugToolbarInternal | undefined;
+export {};

@@ -14,7 +14,8 @@ export interface WidgetConfig {
   };
 }
 
-export class BugToolbar {
+// Renamed to indicate it's internal
+class ExterminatorToolBarInternal {
   private toolbar: HTMLElement;
   private annotator: Annotator | null = null;
   private colorPicker: ColorPicker;
@@ -386,7 +387,12 @@ export class BugToolbar {
   }
 }
 
-// Initialize the bug tool
-export function init(config?: WidgetConfig): void {
-  new BugToolbar(config);
+export function init(config?: WidgetConfig) {
+  // Check if we're in a browser environment
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    console.warn('Exterminator Bar can only be initialized in a browser environment');
+    return;
+  }
+
+  return new ExterminatorToolBarInternal(config);
 }

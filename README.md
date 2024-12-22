@@ -72,6 +72,33 @@ Then initialize the widget:
 
 ## Usage
 
+### React
+
+```typescript
+import { init } from 'exterminator-bar';
+import { useEffect } from 'react';
+
+function App() {
+  useEffect(() => {
+    init({
+      // configuration options
+      callbacks: {
+        onSubmit: async (report) => {
+          console.log('Bug report submitted:', report);
+        },
+        onError: (error) => {
+          console.error('Error occurred:', error);
+        }
+      }
+    });
+  }, []);
+
+  return (
+    // your app content
+  );
+}
+```
+
 ### ES Modules
 
 ```typescript
