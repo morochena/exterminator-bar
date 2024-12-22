@@ -4,7 +4,21 @@ import { Annotator } from './services/annotator';
 import { BugReportForm } from './components/BugReportForm';
 import { ColorPicker } from './components/ColorPicker';
 import { IntegrationManager } from './integrations/manager';
-import type { BugReport, VisualFeedback, WidgetConfig } from './types';
+import type { BugReport, VisualFeedback } from './types';
+
+type ScreenshotMethod = 'rasterizehtml' | 'html2canvas' | 'browser';
+
+export interface WidgetConfig {
+  integration?: {
+    type: string;
+    config: Record<string, unknown>;
+  };
+  callbacks?: {
+    onSubmit?: (report: BugReport) => Promise<void>;
+    onError?: (error: Error) => void;
+  };
+  screenshotMethod?: ScreenshotMethod;
+}
 
 export class BugToolbar {
   private toolbar: HTMLElement;
@@ -15,11 +29,13 @@ export class BugToolbar {
   private screenRecordingData: VisualFeedback['screenRecording'] | null = null;
   private integrationManager?: IntegrationManager;
   private recordButton!: HTMLButtonElement;
+  private screenshotMethod: ScreenshotMethod;
 
   constructor(private config?: WidgetConfig) {
     this.toolbar = this.createToolbar();
     this.colorPicker = new ColorPicker(this.handleColorSelect.bind(this));
     this.screenRecorder = new ScreenRecorder();
+    this.screenshotMethod = config?.screenshotMethod || 'html2canvas';
     
     if (config?.integration) {
       this.integrationManager = new IntegrationManager(config.integration);
@@ -109,8 +125,8 @@ export class BugToolbar {
       // Hide toolbar temporarily
       this.toolbar.style.display = 'none';
       
-      // Capture screenshot
-      this.screenshot = await captureScreenshot();
+      // Capture screenshot using configured method
+      this.screenshot = await captureScreenshot(this.screenshotMethod);
       
       // Show toolbar again
       this.toolbar.style.display = 'flex';
@@ -120,6 +136,9 @@ export class BugToolbar {
     } catch (error) {
       console.error('Screenshot failed:', error);
       this.toolbar.style.display = 'flex';
+      this.config?.callbacks?.onError?.(
+        error instanceof Error ? error : new Error('Screenshot capture failed')
+      );
     }
   }
 

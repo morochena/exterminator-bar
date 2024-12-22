@@ -251,7 +251,9 @@ ${JSON.stringify(report.selectedElement, null, 2)}
   <script type="module">
     import { init } from '../src/index.ts';
 
-    init();
+    init({
+      screenshotMethod: 'dom-to-image'
+    });
   </script>
 </body>
 
