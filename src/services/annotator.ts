@@ -83,6 +83,25 @@ export class Annotator {
       backgroundColor: '#2c2c2c'
     });
 
+    // Add keyboard event listener for delete
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Delete' && this.currentMode === 'select') {
+        const activeObjects = this.canvas.getActiveObjects();
+        activeObjects.forEach(obj => {
+          // If it's an arrow, also remove its arrowhead
+          if (obj instanceof Arrow) {
+            const arrowhead = obj.getArrowhead();
+            if (arrowhead) {
+              this.canvas.remove(arrowhead);
+            }
+          }
+          this.canvas.remove(obj);
+        });
+        this.canvas.discardActiveObject();
+        this.canvas.renderAll();
+      }
+    });
+
     // Load background image
     fabric.Image.fromURL(backgroundImage, (img) => {
       // Get container dimensions
@@ -208,21 +227,27 @@ export class Annotator {
     // Setup text mode
     this.canvas.on('mouse:down', (options) => {
       if (this.currentMode === 'text' && options.pointer) {
+        const activeObject = this.canvas.getActiveObject();
+        if (activeObject && activeObject instanceof fabric.IText) {
+          // If we clicked an existing text object, just enter editing mode
+          activeObject.enterEditing();
+          return;
+        }
+
         const text = new fabric.IText('Click to edit', {
           left: options.pointer.x,
           top: options.pointer.y,
           fontSize: 20,
           fill: this.currentColor,
-          selectable: false,
-          evented: false
+          selectable: true,
+          evented: true
         });
         this.canvas.add(text);
         text.enterEditing();
+        this.canvas.setActiveObject(text);
         
         // Switch back to select mode after placing text
         text.on('editing:exited', () => {
-          text.selectable = true;
-          text.evented = true;
           this.setMode('select');
         });
       }

@@ -2,235 +2,119 @@
 
 A lightweight, customizable widget for manual QA and bug reporting in web applications. Capture screenshots, record screen sessions, add annotations, and collect detailed bug reports with ease.
 
-## Features
-
-- 📸 Screenshot capture with annotation tools
-- 🎥 Screen recording
-- 📝 Customizable bug report forms
-- 🔄 Multiple integration options
-- 🎨 Themeable UI
-- ⌨️ Configurable hotkeys
-
-## Integrations
-**Important:** Note that this package does not include a standalone backend, it only includes the widget and the configurable integrations. If an integration is not configured, it will simply log the report to the console.
-
-- [x] Custom JSON Webhook
-- [x] GitHub
-- [x] Asana
-- [ ] Jira
-- [x] Linear
-- [ ] Slack
-- [ ] Azure DevOps
-
-## Installation
-
-### NPM Package
+## Quick Start
 
 ```bash
+# Install via your package manager
 npm install exterminator-bar
-# or
-yarn add exterminator-bar
-# or
-pnpm add exterminator-bar
+# or yarn add exterminator-bar
+# or pnpm add exterminator-bar
 ```
-
-### CDN
-
-```html
-<!-- Using unpkg -->
-<script src="https://unpkg.com/exterminator-bar@0.1.9/dist/index.umd.js"></script>
-
-<!-- Using jsDelivr -->
-<script src="https://cdn.jsdelivr.net/npm/exterminator-bar@0.1.9/dist/index.umd.js"></script>
-```
-
-Then initialize the widget:
-
-```html
-<script>
-  window.addEventListener('DOMContentLoaded', () => {
-    if (typeof window.ExterminatorBar === 'undefined') {
-      console.error('ExterminatorBar failed to load');
-      return;
-    }
-
-    // Initialize using init function
-    window.ExterminatorBar.init({
-      // add options below
-      callbacks: {
-        onSubmit: async (report) => {
-          console.log('Bug report submitted:', report);
-        },
-        onError: (error) => {
-          console.error('Error occurred:', error);
-        }
-      }
-    });
-  });
-</script>
-```
-
-## Usage
-
-### React
 
 ```typescript
 import { init } from 'exterminator-bar';
-import { useEffect } from 'react';
 
-function App() {
-  useEffect(() => {
-    init({
-      // configuration options
-      callbacks: {
-        onSubmit: async (report) => {
-          console.log('Bug report submitted:', report);
-        },
-        onError: (error) => {
-          console.error('Error occurred:', error);
-        }
-      }
-    });
-  }, []);
-
-  return (
-    // your app content
-  );
-}
-```
-
-### ES Modules
-
-```typescript
-import { ExterminatorBar } from 'exterminator-bar';
-
-const bugReporter = new ExterminatorBar({
-  position: 'right',
-  theme: {
-    primary: '#FF4444',
-    secondary: '#333333',
-    text: '#FFFFFF',
-    background: '#FFFFFF'
-  },
-  tools: {
-    screenshot: {
-      enabled: true,
-      hotkey: 'ctrl+shift+s'
-    },
-    screenRecording: {
-      enabled: true,
-      hotkey: 'ctrl+shift+r'
-    },
-    annotations: {
-      enabled: true,
-      tools: ['highlight', 'arrow', 'text']
+// Initialize with basic configuration
+init({
+  callbacks: {
+    onSubmit: async (report) => {
+      console.log('Bug report submitted:', report);
     }
   }
 });
 ```
 
-### CommonJS
+## Features
 
-```javascript
-const { ExterminatorBar } = require('exterminator-bar');
+- 📸 Screenshot capture with annotation tools (highlight, arrow, text)
+- 🎥 Screen recording
+- 📝 Customizable bug report forms
+- 🔄 Multiple integration options (GitHub, Linear, Asana, Custom Webhook)
+- 🎨 Modern, unobtrusive UI
+- ⌨️ Error handling and callbacks
 
-const bugReporter = new ExterminatorBar({
+## Installation Options
+
+### NPM Module (Recommended)
+```typescript
+import { init } from 'exterminator-bar';
+
+init({
   // configuration options
 });
 ```
 
-### Browser Script Tag
-
+### CDN
 ```html
-<script src="https://unpkg.com/exterminator-bar"></script>
+<script src="https://unpkg.com/exterminator-bar@latest/dist/index.umd.js"></script>
 <script>
-  const bugReporter = new ExterminatorBar({
+  window.ExterminatorBar.init({
     // configuration options
   });
 </script>
 ```
 
-### Browser ES Modules
+## Configuration
 
-```html
-<script type="module">
-  import { ExterminatorBar } from 'https://unpkg.com/exterminator-bar?module';
-  
-  const bugReporter = new ExterminatorBar({
-    // configuration options
-  });
-</script>
-```
-
-## Configuration Options
-
+### Core Options
 ```typescript
 interface WidgetConfig {
-  // Position of the widget button
-  position?: 'left' | 'right';
-  
-  // Theme customization
-  theme?: {
-    primary: string;    // Primary color for buttons and accents
-    secondary: string;  // Secondary color for UI elements
-    text: string;      // Text color
-    background: string; // Background color
+  // Disable browser's native screenshot API and use canvas-based fallback
+  disableScreenshotBrowserApi?: boolean;
+
+  // Event callbacks
+  callbacks?: {
+    onSubmit?: (report: BugReport) => Promise<void>;
+    onError?: (error: Error) => void;
   };
-  
-  // Tool configurations
-  tools?: {
-    screenshot?: {
-      enabled: boolean;
-      hotkey?: string;
-      quality?: number; // 0-1
-    };
-    screenRecording?: {
-      enabled: boolean;
-      hotkey?: string;
-    };
-    annotations?: {
-      enabled: boolean;
-      defaultColor?: string;
-      availableColors?: string[];
-      tools?: Array<'highlight' | 'arrow' | 'text'>;
-    };
-  };
-  
-  // Form customization
-  form?: {
-    requiredFields?: string[];
-    customFields?: Array<{
-      name: string;
-      type: 'text' | 'number' | 'select' | 'boolean';
-      options?: string[];
-      required?: boolean;
-    }>;
-  };
-  
-  // Integration settings
-  integration?: {
-    // GitHub integration
-    type: 'github';
-    owner: string;
-    repo: string;
-    token: string;
-    labels?: string[];
-  } | {
-    // Webhook integration
-    type: 'webhook';
-    url: string;
-    method?: 'POST' | 'PUT' | 'PATCH';
-    headers?: Record<string, string>;
-  };
+
+  // Integration configuration (see below)
+  integration?: IntegrationConfig;
 }
 ```
 
-## Integration Examples
-
-### GitHub Integration
-
+### Bug Report Structure
 ```typescript
-const bugReporter = new ExterminatorBar({
+interface BugReport {
+  title: string;
+  description: string;
+  metadata: {
+    userAgent: string;
+    url: string;
+    timestamp: string;
+    [key: string]: any;
+  };
+  visualFeedback?: {
+    screenshot?: {
+      dataUrl: string;
+      type: string;
+      annotations?: Array<{
+        type: 'highlight' | 'arrow' | 'text';
+        coordinates: {
+          x: number;
+          y: number;
+          width: number;
+          height: number;
+        };
+        color: string;
+        content?: string;
+      }>;
+    };
+    screenRecording?: {
+      url: string;
+      type: string;
+      size: number;
+    };
+  };
+  customFields?: Record<string, any>;
+}
+```
+
+## Integrations
+
+### GitHub
+```typescript
+init({
   integration: {
     type: 'github',
     owner: 'your-username',
@@ -241,22 +125,17 @@ const bugReporter = new ExterminatorBar({
 });
 ```
 
-### Linear Integration
-
+### Linear
 ```typescript
-const bugReporter = new ExterminatorBar({
+init({
   integration: {
     type: 'linear',
-    apiKey: 'lin_api_xxxxxxxxxxxx',     // Linear API Key
-    teamId: 'TEAM_ID',                  // Linear Team ID
-    status: 'Backlog',                  // Optional: Status name or UUID
-    template: 'template_uuid',          // Optional: Issue template UUID
-    project: 'Project Name',            // Optional: Project name or UUID
-    projectMilestone: 'Milestone',      // Optional: Project milestone name or UUID
-    cycle: 'Cycle 1',                   // Optional: Cycle number, name, or UUID
-    estimate: 3,                        // Optional: Point estimate (0-21)
-    labels: ['bug', 'reported'],        // Optional: Label names or UUIDs
-    priorityMap: {                      // Optional: Map severity to Linear priorities
+    apiKey: 'lin_api_xxxxxxxxxxxx',
+    teamId: 'TEAM_ID',
+    status: 'Backlog',
+    project: 'Project Name',
+    labels: ['bug'],
+    priorityMap: {
       critical: 'urgent',
       high: 'high',
       medium: 'medium',
@@ -266,10 +145,22 @@ const bugReporter = new ExterminatorBar({
 });
 ```
 
-### Webhook Integration
-
+### Asana
 ```typescript
-const bugReporter = new ExterminatorBar({
+init({
+  integration: {
+    type: 'asana',
+    token: 'your-asana-token',
+    projectId: 'project-id',
+    workspace: 'workspace-id',
+    tags: ['bug']
+  }
+});
+```
+
+### Custom Webhook
+```typescript
+init({
   integration: {
     type: 'webhook',
     url: 'https://your-api.com/bugs',
@@ -281,52 +172,13 @@ const bugReporter = new ExterminatorBar({
 });
 ```
 
-## Events and Callbacks
-
-```typescript
-const bugReporter = new ExterminatorBar({
-  callbacks: {
-    onSubmit: async (report) => {
-      console.log('Bug report submitted:', report);
-      // Custom handling of the report
-    },
-    onError: (error) => {
-      console.error('Error occurred:', error);
-      // Custom error handling
-    }
-  }
-});
-```
-
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## Releasing
-
-This package uses GitHub Actions for automated releases. To publish a new version:
-
-1. Update the version in `package.json`
-2. Create and push a new tag:
-   ```bash
-   git tag v1.0.0
-   git push origin v1.0.0
-   ```
-3. Create a new release on GitHub using the tag
-4. The GitHub Action will automatically:
-   - Run tests
-   - Build the package
-   - Publish to npm
-   - Publish to GitHub Packages
-
-### Setting up NPM Token
-
-To enable automated publishing, you need to add your NPM token to GitHub Secrets:
-
-1. Create an NPM access token with publish permissions
-2. Go to your GitHub repository settings
-3. Navigate to Secrets and Variables > Actions
-4. Add a new secret named `NPM_TOKEN` with your NPM access token
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## License
 
