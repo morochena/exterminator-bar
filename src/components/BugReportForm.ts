@@ -64,7 +64,7 @@ export class BugReportForm {
     `;
 
     form.innerHTML = `
-      <h2 style="margin-top: 0;">Report a Bug</h2>
+      <h2 style="margin-top: 0; color: black !important;">Report a Bug</h2>
       
       <div class="form-group">
         <label for="title">Title</label>
@@ -141,29 +141,54 @@ ${JSON.stringify(this.formData.selectedElement, null, 2)}
     const style = document.createElement('style');
     style.textContent = `
       .form-group {
-        margin-bottom: 15px;
+        margin-bottom: 15px !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
       }
       .form-group label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: 500;
+        display: block !important;
+        margin-bottom: 5px !important;
+        font-weight: 500 !important;
+        color: #000 !important;
+        font-size: 14px !important;
       }
-      .form-group input,
+      .form-group input[type="text"],
       .form-group textarea,
       .form-group select {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 14px;
+        width: 100% !important;
+        padding: 8px !important;
+        border: 1px solid #ddd !important;
+        border-radius: 4px !important;
+        font-size: 14px !important;
+        line-height: 1.4 !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        font-family: inherit !important;
+        background-color: #fff !important;
+        color: #000 !important;
+      }
+      .form-group input[type="text"]:focus,
+      .form-group textarea:focus,
+      .form-group select:focus {
+        outline: none !important;
+        border-color: #4a90e2 !important;
+        box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2) !important;
       }
       .button {
-        border: none;
-        padding: 8px 16px;
-        border-radius: 4px;
-        color: white;
-        cursor: pointer;
-        font-size: 14px;
+        border: none !important;
+        padding: 8px 16px !important;
+        border-radius: 4px !important;
+        color: white !important;
+        cursor: pointer !important;
+        font-size: 14px !important;
+        font-family: inherit !important;
+        line-height: 1.4 !important;
+        margin: 0 !important;
+        text-transform: none !important;
+        text-decoration: none !important;
+        text-align: center !important;
+      }
+      .button:hover {
+        opacity: 0.9 !important;
       }
     `;
 
