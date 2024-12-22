@@ -6,17 +6,20 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'ExterminatorBar',
-      fileName: 'exterminator-bar'
+      fileName: (format) => `index.${format === 'es' ? 'mjs' : format === 'umd' ? 'umd.js' : 'js'}`,
+      formats: ['es', 'umd', 'cjs'],
     },
     rollupOptions: {
       external: ['fabric', 'html2canvas'],
       output: {
         globals: {
           fabric: 'fabric',
-          html2canvas: 'html2canvas'
-        }
-      }
-    }
+          html2canvas: 'html2canvas',
+        },
+      },
+    },
+    sourcemap: true,
+    minify: 'terser',
   },
   resolve: {
     alias: {

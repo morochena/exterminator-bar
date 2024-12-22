@@ -1,4 +1,5 @@
 import { captureScreenshot } from './services/screenshot';
+import { ScreenRecorder } from './services/screenRecorder';
 import { Annotator } from './services/annotator';
 import { BugReportForm } from './components/BugReportForm';
 import { ColorPicker } from './components/ColorPicker';
@@ -10,12 +11,16 @@ export class BugToolbar {
   private annotator: Annotator | null = null;
   private colorPicker: ColorPicker;
   private screenshot: string | null = null;
+  private screenRecorder: ScreenRecorder;
+  private screenRecordingData: VisualFeedback['screenRecording'] | null = null;
   private annotations: VisualFeedback['annotations'] = [];
   private integrationManager?: IntegrationManager;
+  private recordButton!: HTMLButtonElement;
 
   constructor(private config?: WidgetConfig) {
     this.toolbar = this.createToolbar();
     this.colorPicker = new ColorPicker(this.handleColorSelect.bind(this));
+    this.screenRecorder = new ScreenRecorder();
     
     if (config?.integration) {
       this.integrationManager = new IntegrationManager(config.integration);
@@ -44,10 +49,14 @@ export class BugToolbar {
     const screenshotBtn = this.createToolbarButton('📸', 'Capture Screenshot');
     screenshotBtn.onclick = this.handleScreenshot.bind(this);
 
+    this.recordButton = this.createToolbarButton('⏺️', 'Record Screen');
+    this.recordButton.onclick = this.handleScreenRecording.bind(this);
+
     const reportBtn = this.createToolbarButton('🐛', 'Report Bug');
     reportBtn.onclick = this.handleBugReport.bind(this);
 
     toolbar.appendChild(screenshotBtn);
+    toolbar.appendChild(this.recordButton);
     toolbar.appendChild(reportBtn);
 
     return toolbar;
@@ -97,6 +106,43 @@ export class BugToolbar {
     }
   }
 
+  private async handleScreenRecording(): Promise<void> {
+    if (this.screenRecorder.isActive()) {
+      try {
+        this.recordButton.innerHTML = '⏺️';
+        this.recordButton.title = 'Record Screen';
+        
+        const videoBlob = await this.screenRecorder.stop();
+        const url = URL.createObjectURL(videoBlob);
+        
+        this.screenRecordingData = {
+          url,
+          type: videoBlob.type,
+          size: videoBlob.size
+        };
+        
+        // Open bug report form automatically after recording
+        this.handleBugReport();
+      } catch (error) {
+        console.error('Failed to stop recording:', error);
+        this.config?.callbacks?.onError?.(
+          error instanceof Error ? error : new Error('Failed to stop recording')
+        );
+      }
+    } else {
+      try {
+        await this.screenRecorder.start();
+        this.recordButton.innerHTML = '⏹️';
+        this.recordButton.title = 'Stop Recording';
+      } catch (error) {
+        console.error('Failed to start recording:', error);
+        this.config?.callbacks?.onError?.(
+          error instanceof Error ? error : new Error('Failed to start recording')
+        );
+      }
+    }
+  }
+
   private async handleSubmit(report: BugReport): Promise<void> {
     try {
       // Submit to integration if configured
@@ -126,6 +172,7 @@ export class BugToolbar {
   private handleBugReport(): void {
     const form = new BugReportForm(
       this.screenshot,
+      this.screenRecordingData,
       null,
       this.handleSubmit.bind(this)
     );
@@ -136,6 +183,7 @@ export class BugToolbar {
         mutation.removedNodes.forEach((node) => {
           if (node instanceof HTMLElement && node.querySelector('form')) {
             this.screenshot = null;
+            this.screenRecordingData = null;
             this.annotations = [];
             observer.disconnect();
           }

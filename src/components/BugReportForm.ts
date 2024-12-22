@@ -16,14 +16,16 @@ export class BugReportForm {
 
   constructor(
     screenshot: string | null,
+    screenRecording: VisualFeedback['screenRecording'] | null,
     selectedElement: VisualFeedback['selectedElement'] | null,
     onSubmit?: (report: BugReport) => void
   ) {
     this.container = this.createContainer();
-    this.formData.visualFeedback = screenshot ? {
-      screenshot,
+    this.formData.visualFeedback = {
+      ...(screenshot ? { screenshot } : {}),
+      ...(screenRecording ? { screenRecording } : {}),
       annotations: []
-    } : undefined;
+    };
     this.formData.selectedElement = selectedElement || undefined;
     this.onSubmit = onSubmit;
     
@@ -102,6 +104,20 @@ export class BugReportForm {
         </div>
       ` : ''}
 
+      ${this.formData.visualFeedback?.screenRecording ? `
+        <div class="form-group">
+          <label>Screen Recording</label>
+          <video 
+            src="${this.formData.visualFeedback.screenRecording.url}"
+            controls
+            style="max-width: 100%; border: 1px solid #ddd; border-radius: 4px;">
+          </video>
+          <div style="margin-top: 4px; color: #666; font-size: 12px;">
+            Size: ${(this.formData.visualFeedback.screenRecording.size / (1024 * 1024)).toFixed(1)} MB
+          </div>
+        </div>
+      ` : ''}
+
       ${this.formData.selectedElement ? `
         <div class="form-group">
           <label>Selected Element</label>
@@ -150,13 +166,13 @@ ${JSON.stringify(this.formData.selectedElement, null, 2)}
         font-size: 14px;
       }
     `;
+
     form.appendChild(style);
+    this.container.appendChild(form);
 
     // Add event listeners
     form.addEventListener('submit', this.handleSubmit.bind(this));
-    form.addEventListener('cancel', () => this.destroy());
-
-    this.container.appendChild(form);
+    form.addEventListener('cancel', () => this.container.remove());
   }
 
   private async handleSubmit(event: Event): Promise<void> {
@@ -191,10 +207,6 @@ ${JSON.stringify(this.formData.selectedElement, null, 2)}
     };
 
     await this.onSubmit?.(report);
-    this.destroy();
-  }
-
-  private destroy(): void {
     this.container.remove();
   }
 } 

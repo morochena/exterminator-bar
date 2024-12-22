@@ -1,32 +1,4 @@
-/**
- * Integration Types and Configurations
- * 
- * Example usage in widget initialization:
- * ```typescript
- * initBugTool({
- *   // ... other config options ...
- *   integration: {
- *     // Choose one of the following integration configs:
- *     
- *     // 1. Webhook Integration
- *     type: 'webhook',
- *     url: 'https://api.example.com/bugs',
- *     method: 'POST',
- *     headers: {
- *       'Authorization': 'Bearer token'
- *     }
- *     
- *     // 2. GitHub Integration
- *     type: 'github',
- *     owner: 'username',
- *     repo: 'repo-name',
- *     token: 'github-token',
- *     labels: ['bug']
- *   }
- * });
- * ```
- */
-import type { BugReport } from '../types';
+import type { BugReport } from './core';
 
 export type IntegrationType = 'webhook' | 'github';
 
