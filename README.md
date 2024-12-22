@@ -37,15 +37,15 @@ pnpm add exterminator-bar
 ### CDN
 
 ```html
+<!-- Dependencies -->
+<script src="https://unpkg.com/fabric@5.3.0/dist/fabric.min.js"></script>
+<script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
 <!-- Using unpkg -->
 <script src="https://unpkg.com/exterminator-bar"></script>
 
 <!-- Using jsDelivr -->
 <script src="https://cdn.jsdelivr.net/npm/exterminator-bar"></script>
-
-<!-- Dependencies -->
-<script src="https://unpkg.com/fabric@5.3.0/dist/fabric.min.js"></script>
-<script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 ```
 
 ## Usage

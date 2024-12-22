@@ -24,7 +24,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <!-- Load exterminator-bar -->
-  <script src="https://unpkg.com/exterminator-bar@0.1.1/dist/index.umd.js"></script>
+  <script src="https://unpkg.com/exterminator-bar/dist/index.umd.js"></script>
   <script>
     // Initialize once everything is loaded
     window.addEventListener('DOMContentLoaded', () => {
@@ -33,7 +33,10 @@
         return;
       }
 
-      // Use the initBugTool function
+      // Log what's available on window.ExterminatorBar
+      console.log('ExterminatorBar exports:', window.ExterminatorBar);
+
+      // Initialize using initBugTool function
       window.ExterminatorBar.initBugTool({
         callbacks: {
           onSubmit: async (report) => {
