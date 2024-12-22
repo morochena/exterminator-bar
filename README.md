@@ -56,6 +56,7 @@ Then initialize the widget:
 
     // Initialize using init function
     window.ExterminatorBar.init({
+      // add options below
       callbacks: {
         onSubmit: async (report) => {
           console.log('Bug report submitted:', report);
