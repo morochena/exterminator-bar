@@ -3,7 +3,7 @@ import domtoimage from 'dom-to-image-more';
 const isClient = typeof window !== 'undefined' && typeof document !== 'undefined';
 
 interface ScreenshotOptions {
-  useScreenshotBrowserApi?: boolean;
+  disableScreenshotBrowserApi?: boolean;
 }
 
 export async function captureScreenshot(options: ScreenshotOptions = {}): Promise<string> {
@@ -12,7 +12,7 @@ export async function captureScreenshot(options: ScreenshotOptions = {}): Promis
   }
 
   try {
-    if (options.useScreenshotBrowserApi) {
+    if (!options.disableScreenshotBrowserApi) {
       return await captureBrowserScreenshot();
     }
     return await captureDomToImageScreenshot();
