@@ -46,7 +46,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/morochena/exterminator-bar"
+    "url": "git+https://github.com/morochena/exterminator-bar.git"
   },
   "bugs": {
     "url": "https://github.com/morochena/exterminator-bar/issues"
