@@ -1,0 +1,32 @@
+{
+  "name": "exterminator-bar",
+  "version": "0.1.0",
+  "description": "A lightweight, customizable widget for manual QA and bug reporting in web applications",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "fabric": "^5.3.0",
+    "html2canvas": "^1.4.1"
+  },
+  "devDependencies": {
+    "@types/fabric": "^5.3.6",
+    "typescript": "^5.0.4",
+    "vite": "^4.3.9",
+    "vitest": "^0.31.1"
+  },
+  "keywords": [
+    "qa",
+    "testing",
+    "bug-reporting",
+    "screenshot",
+    "annotation"
+  ],
+  "author": "",
+  "license": "MIT"
+}
