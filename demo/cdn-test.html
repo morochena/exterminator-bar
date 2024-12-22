@@ -17,7 +17,6 @@
 
 <body>
   <h1>Exterminator Bar Demo</h1>
-  <p>Click anywhere to open the bug reporting tool!</p>
 
   <!-- Load exterminator-bar -->
   <script src="https://unpkg.com/exterminator-bar@0.1.4/dist/index.umd.js
@@ -29,9 +28,6 @@
         console.error('ExterminatorBar failed to load');
         return;
       }
-
-      // Log what's available on window.ExterminatorBar
-      console.log('ExterminatorBar exports:', window.ExterminatorBar);
 
       // Initialize using init function
       window.ExterminatorBar.init({
