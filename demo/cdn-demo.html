@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exterminator Bar Demo</title>
+  <style>
+    body {
+      font-family: -apple-system, system-ui, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Exterminator Bar Demo</h1>
+  <p>Click anywhere to open the bug reporting tool!</p>
+
+  <!-- Load dependencies first -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <!-- Load exterminator-bar -->
+  <script src="https://unpkg.com/exterminator-bar@0.1.1/dist/index.umd.js"></script>
+  <script>
+    // Initialize once everything is loaded
+    window.addEventListener('DOMContentLoaded', () => {
+      if (typeof window.ExterminatorBar === 'undefined') {
+        console.error('ExterminatorBar failed to load');
+        return;
+      }
+
+      // Use the initBugTool function
+      window.ExterminatorBar.initBugTool({
+        callbacks: {
+          onSubmit: async (report) => {
+            console.log('Bug report submitted:', report);
+            alert('Bug report submitted! Check the console for details.');
+          },
+          onError: (error) => {
+            console.error('Error occurred:', error);
+            alert('An error occurred. Check the console for details.');
+          }
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

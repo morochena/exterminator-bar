@@ -4,12 +4,10 @@ A lightweight, customizable widget for manual QA and bug reporting in web applic
 
 ## Features
 
-- 📸 Screenshot capture
+- 📸 Screenshot capture with annotation tools
 - 🎥 Screen recording
-- ✏️ Annotation tools
-- 🎯 Element picker
 - 📝 Customizable bug report forms
-- 🔄 Multiple integration options (GitHub, Webhook)
+- 🔄 Multiple integration options
 - 🎨 Themeable UI
 - ⌨️ Configurable hotkeys
 

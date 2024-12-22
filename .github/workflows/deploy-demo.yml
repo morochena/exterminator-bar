@@ -1,0 +1,52 @@
+name: Deploy Demo
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package
+        run: npm run build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Create demo directory
+        run: |
+          mkdir -p .demo-dist
+          cp -r demo/* .demo-dist/
+          cp -r dist/* .demo-dist/
+          sed -i 's|https://unpkg.com/exterminator-bar|./index.umd.js|g' .demo-dist/cdn-demo.html
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ".demo-dist"
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2

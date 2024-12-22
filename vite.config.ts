@@ -16,6 +16,7 @@ export default defineConfig({
           fabric: 'fabric',
           html2canvas: 'html2canvas',
         },
+        exports: 'named',
       },
     },
     sourcemap: true,
