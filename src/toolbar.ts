@@ -32,17 +32,21 @@ export class BugToolbar {
     const toolbar = document.createElement('div');
     toolbar.id = 'qa-toolbar';
     toolbar.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #ffffff;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      display: flex;
-      gap: 8px;
-      z-index: 10000;
+      position: fixed !important;
+      bottom: 20px !important;
+      right: 20px !important;
+      background: #ffffff !important;
+      border: 1px solid #e0e0e0 !important;
+      border-radius: 8px !important;
+      padding: 8px !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+      display: flex !important;
+      gap: 8px !important;
+      z-index: 2147483647 !important;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+      font-size: 16px !important;
+      line-height: normal !important;
+      box-sizing: border-box !important;
     `;
 
     const screenshotBtn = this.createToolbarButton('📸', 'Capture Screenshot');
@@ -66,13 +70,27 @@ export class BugToolbar {
     button.innerHTML = icon;
     button.title = tooltip;
     button.style.cssText = `
-      border: none;
-      background: transparent;
-      font-size: 20px;
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 4px;
-      transition: background-color 0.2s;
+      border: none !important;
+      background: transparent !important;
+      font-size: 20px !important;
+      cursor: pointer !important;
+      padding: 8px !important;
+      border-radius: 4px !important;
+      transition: background-color 0.2s !important;
+      min-width: unset !important;
+      min-height: unset !important;
+      width: auto !important;
+      height: auto !important;
+      margin: 0 !important;
+      outline: none !important;
+      box-shadow: none !important;
+      text-transform: none !important;
+      font-family: inherit !important;
+      line-height: normal !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      box-sizing: border-box !important;
     `;
 
     button.onmouseover = () => {
