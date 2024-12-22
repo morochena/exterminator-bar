@@ -38,10 +38,10 @@ pnpm add exterminator-bar
 
 ```html
 <!-- Using unpkg -->
-<script src="https://unpkg.com/exterminator-bar@0.1.4/dist/index.umd.js"></script>
+<script src="https://unpkg.com/exterminator-bar@0.1.8/dist/index.umd.js"></script>
 
 <!-- Using jsDelivr -->
-<script src="https://cdn.jsdelivr.net/npm/exterminator-bar@0.1.4/dist/index.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exterminator-bar@0.1.8/dist/index.umd.js"></script>
 ```
 
 Then initialize the widget:
