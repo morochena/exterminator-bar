@@ -2,6 +2,7 @@ import type { BugReport } from '../types';
 import type { Integration, IntegrationConfig, IntegrationResponse } from '../types';
 import { WebhookIntegration } from './webhook';
 import { GithubIntegration } from './github';
+import { AsanaIntegration } from './asana';
 
 export class IntegrationManager {
   private integration: Integration;
@@ -16,6 +17,8 @@ export class IntegrationManager {
         return new WebhookIntegration(config);
       case 'github':
         return new GithubIntegration(config);
+      case 'asana':
+        return new AsanaIntegration(config);
       default:
         throw new Error(`Unsupported integration type: ${(config as IntegrationConfig).type}`);
     }

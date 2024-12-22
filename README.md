@@ -16,7 +16,7 @@ A lightweight, customizable widget for manual QA and bug reporting in web applic
 
 - [x] Custom JSON Webhook
 - [x] GitHub
-- [ ] Asana
+- [x] Asana
 - [ ] Jira
 - [ ] Linear
 - [ ] Slack

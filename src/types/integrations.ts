@@ -1,6 +1,6 @@
 import type { BugReport } from './core';
 
-export type IntegrationType = 'webhook' | 'github';
+export type IntegrationType = 'webhook' | 'github' | 'asana';
 
 export interface BaseConfig {
   type: IntegrationType;
@@ -22,7 +22,15 @@ export interface GithubConfig extends BaseConfig {
   labels?: string[];
 }
 
-export type IntegrationConfig = WebhookConfig | GithubConfig;
+export interface AsanaConfig extends BaseConfig {
+  type: 'asana';
+  token: string;
+  workspace: string;
+  project: string;
+  defaultSection?: string;
+}
+
+export type IntegrationConfig = WebhookConfig | GithubConfig | AsanaConfig;
 
 export interface IntegrationResponse {
   success: boolean;
