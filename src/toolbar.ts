@@ -4,20 +4,14 @@ import { Annotator } from './services/annotator';
 import { BugReportForm } from './components/BugReportForm';
 import { ColorPicker } from './components/ColorPicker';
 import { IntegrationManager } from './integrations/manager';
-import type { BugReport, VisualFeedback } from './types';
-
-type ScreenshotMethod = 'rasterizehtml' | 'html2canvas' | 'browser';
+import type { BugReport, VisualFeedback, IntegrationConfig } from './types';
 
 export interface WidgetConfig {
-  integration?: {
-    type: string;
-    config: Record<string, unknown>;
-  };
+  integration?: IntegrationConfig;
   callbacks?: {
     onSubmit?: (report: BugReport) => Promise<void>;
     onError?: (error: Error) => void;
   };
-  screenshotMethod?: ScreenshotMethod;
 }
 
 export class BugToolbar {
@@ -29,13 +23,12 @@ export class BugToolbar {
   private screenRecordingData: VisualFeedback['screenRecording'] | null = null;
   private integrationManager?: IntegrationManager;
   private recordButton!: HTMLButtonElement;
-  private screenshotMethod: ScreenshotMethod;
 
   constructor(private config?: WidgetConfig) {
     this.toolbar = this.createToolbar();
     this.colorPicker = new ColorPicker(this.handleColorSelect.bind(this));
     this.screenRecorder = new ScreenRecorder();
-    this.screenshotMethod = config?.screenshotMethod || 'html2canvas';
+
     
     if (config?.integration) {
       this.integrationManager = new IntegrationManager(config.integration);
@@ -126,7 +119,7 @@ export class BugToolbar {
       this.toolbar.style.display = 'none';
       
       // Capture screenshot using configured method
-      this.screenshot = await captureScreenshot(this.screenshotMethod);
+      this.screenshot = await captureScreenshot();
       
       // Show toolbar again
       this.toolbar.style.display = 'flex';
