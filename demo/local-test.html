@@ -249,20 +249,9 @@ ${JSON.stringify(report.selectedElement, null, 2)}
 
   <!-- Load our bug reporting widget -->
   <script type="module">
-    import { initBugTool } from '../src/index.ts';
+    import { init } from '../src/index.ts';
 
-    // Initialize with custom submit handler
-    initBugTool(async (report) => {
-      // In a real application, you would send this to your backend
-      console.log('Report submitted:', report);
-
-      // For demo purposes, we'll just display it on the page
-      const reportsList = document.getElementById('reports-list');
-      reportsList.insertBefore(
-        renderReport(report),
-        reportsList.firstChild
-      );
-    });
+    init();
   </script>
 </body>
 

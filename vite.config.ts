@@ -10,12 +10,7 @@ export default defineConfig({
       formats: ['es', 'umd', 'cjs'],
     },
     rollupOptions: {
-      external: ['fabric', 'html2canvas'],
       output: {
-        globals: {
-          fabric: 'fabric',
-          html2canvas: 'html2canvas',
-        },
         exports: 'named',
         format: 'umd',
         name: 'ExterminatorBar',

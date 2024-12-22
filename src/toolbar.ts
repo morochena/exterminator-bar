@@ -357,6 +357,6 @@ export class BugToolbar {
 }
 
 // Initialize the bug tool
-export function initBugTool(config?: WidgetConfig): void {
+export function init(config?: WidgetConfig): void {
   new BugToolbar(config);
 }
