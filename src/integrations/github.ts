@@ -26,7 +26,7 @@
  * 3. Copy the token and store it securely
  */
 import type { BugReport } from '../types';
-import type { Integration, GithubConfig, IntegrationResponse } from './types';
+import type { Integration, GithubConfig, IntegrationResponse } from '../types';
 
 export class GithubIntegration implements Integration {
   private baseUrl = 'https://api.github.com';

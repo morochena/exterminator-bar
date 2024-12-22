@@ -30,6 +30,7 @@
     "@types/fabric": "^5.3.6",
     "@vitest/coverage-c8": "^0.31.1",
     "jsdom": "^22.1.0",
+    "terser": "^5.37.0",
     "typescript": "^5.0.4",
     "vite": "^4.3.9",
     "vitest": "^0.31.1"

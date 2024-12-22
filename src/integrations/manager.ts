@@ -1,5 +1,5 @@
 import type { BugReport } from '../types';
-import type { Integration, IntegrationConfig, IntegrationResponse } from './types';
+import type { Integration, IntegrationConfig, IntegrationResponse } from '../types';
 import { WebhookIntegration } from './webhook';
 import { GithubIntegration } from './github';
 
@@ -17,7 +17,7 @@ export class IntegrationManager {
       case 'github':
         return new GithubIntegration(config);
       default:
-        throw new Error(`Unsupported integration type: ${config.type}`);
+        throw new Error(`Unsupported integration type: ${(config as IntegrationConfig).type}`);
     }
   }
 

@@ -13,7 +13,6 @@ export class BugToolbar {
   private screenshot: string | null = null;
   private screenRecorder: ScreenRecorder;
   private screenRecordingData: VisualFeedback['screenRecording'] | null = null;
-  private annotations: VisualFeedback['annotations'] = [];
   private integrationManager?: IntegrationManager;
   private recordButton!: HTMLButtonElement;
 
@@ -169,8 +168,8 @@ export class BugToolbar {
     }
   }
 
-  private handleBugReport(): void {
-    const form = new BugReportForm(
+  private async handleBugReport(): Promise<void> {
+    new BugReportForm(
       this.screenshot,
       this.screenRecordingData,
       null,
@@ -184,7 +183,6 @@ export class BugToolbar {
           if (node instanceof HTMLElement && node.querySelector('form')) {
             this.screenshot = null;
             this.screenRecordingData = null;
-            this.annotations = [];
             observer.disconnect();
           }
         });
@@ -224,9 +222,6 @@ export class BugToolbar {
 
   private handleAnnotationDone(): void {
     if (!this.annotator) return;
-    
-    // Get annotations metadata
-    this.annotations = this.annotator.getAnnotations();
     
     // Update the screenshot with the annotated version
     if (this.screenshot) {
@@ -339,7 +334,7 @@ export class BugToolbar {
     document.body.appendChild(container);
   }
 
-  private createAnnotationButton(icon: string, tooltip: string, mode: string): HTMLButtonElement {
+  private createAnnotationButton(icon: string, tooltip: string, _mode: string): HTMLButtonElement {
     const button = document.createElement('button');
     button.innerHTML = icon;
     button.title = tooltip;

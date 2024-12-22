@@ -25,7 +25,7 @@
  * ```
  */
 import type { BugReport } from '../types';
-import type { Integration, WebhookConfig, IntegrationResponse } from './types';
+import type { Integration, WebhookConfig, IntegrationResponse } from '../types';
 
 export class WebhookIntegration implements Integration {
   constructor(private config: WebhookConfig) {
