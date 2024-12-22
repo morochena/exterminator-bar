@@ -1,6 +1,6 @@
 # Exterminator Bar 🐛
 
-A lightweight, customizable widget for manual QA and bug reporting in web applications. Capture screenshots, record screen sessions, add annotations, and collect detailed bug reports with ease.
+A lightweight, customizable widget for manual QA and bug reporting in web applications. Capture screenshots, record screen sessions, add annotations, and collect detailed bug reports with ease and without leaving the page.
 
 ## Quick Start
 
@@ -30,7 +30,7 @@ init({
 - 🎥 Screen recording
 - 📝 Customizable bug report forms
 - 🔄 Multiple integration options (GitHub, Linear, Asana, Custom Webhook)
-- 🎨 Modern, unobtrusive UI
+- 🎨 Simple, unobtrusive UI
 - ⌨️ Error handling and callbacks
 
 ## Installation Options
