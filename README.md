@@ -13,6 +13,15 @@ A lightweight, customizable widget for manual QA and bug reporting in web applic
 - 🎨 Themeable UI
 - ⌨️ Configurable hotkeys
 
+## Integrations
+**Important:** Note that this package does not include a standalone backend, it only includes the widget and the configurable integrations. If an integration is not configured, it will simply log the report to the console.
+
+- [x] Custom JSON Webhook
+- [x] GitHub
+- [ ] Jira
+- [ ] Linear
+- [ ] Slack
+
 ## Installation
 
 ### NPM Package
