@@ -15,14 +15,10 @@ export class ScreenRecorder {
 
     try {
       // Request screen capture permission and get stream
-      this.stream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          sampleRate: 44100
-        }
-      });
+      this.stream = await navigator.mediaDevices.getDisplayMedia(
+        // @ts-ignore - preferCurrentTab is a newer API feature not yet in TypeScript types
+        { preferCurrentTab: true }
+      );
 
       // Create MediaRecorder instance
       this.mediaRecorder = new MediaRecorder(this.stream, {
