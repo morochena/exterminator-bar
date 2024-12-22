@@ -4,7 +4,15 @@ export class ScreenRecorder {
   private isRecording = false;
   private stream: MediaStream | null = null;
 
+  private get isClient(): boolean {
+    return typeof window !== 'undefined' && typeof navigator !== 'undefined' && 'mediaDevices' in navigator;
+  }
+
   async start(): Promise<void> {
+    if (!this.isClient) {
+      throw new Error('Screen recording is only available in browser environments with mediaDevices support');
+    }
+
     try {
       // Request screen capture permission and get stream
       this.stream = await navigator.mediaDevices.getDisplayMedia({

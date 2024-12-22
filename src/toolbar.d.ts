@@ -1,4 +1,5 @@
 import type { BugReport, IntegrationConfig } from './types';
+
 export interface WidgetConfig {
     integration?: IntegrationConfig;
     callbacks?: {
@@ -6,6 +7,7 @@ export interface WidgetConfig {
         onError?: (error: Error) => void;
     };
 }
+
 declare class BugToolbarInternal {
     private config?;
     private toolbar;
@@ -29,5 +31,6 @@ declare class BugToolbarInternal {
     private showAnnotator;
     private createAnnotationButton;
 }
-export declare function init(config?: WidgetConfig): BugToolbarInternal | undefined;
+
+export declare function init(config?: WidgetConfig): Promise<BugToolbarInternal | undefined>;
 export {};

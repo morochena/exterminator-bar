@@ -1,10 +1,12 @@
-import { captureScreenshot } from './services/screenshot';
 import { ScreenRecorder } from './services/screenRecorder';
 import { Annotator } from './services/annotator';
 import { BugReportForm } from './components/BugReportForm';
 import { ColorPicker } from './components/ColorPicker';
 import { IntegrationManager } from './integrations/manager';
 import type { BugReport, VisualFeedback, IntegrationConfig } from './types';
+
+// Utility to check if we're in a browser environment
+const isClient = typeof window !== 'undefined' && typeof document !== 'undefined';
 
 export interface WidgetConfig {
   integration?: IntegrationConfig;
@@ -26,11 +28,14 @@ class ExterminatorToolBarInternal {
   private recordButton!: HTMLButtonElement;
 
   constructor(private config?: WidgetConfig) {
+    if (!isClient) {
+      throw new Error('ExterminatorToolBar can only be initialized in a browser environment');
+    }
+
     this.toolbar = this.createToolbar();
     this.colorPicker = new ColorPicker(this.handleColorSelect.bind(this));
     this.screenRecorder = new ScreenRecorder();
 
-    
     if (config?.integration) {
       this.integrationManager = new IntegrationManager(config.integration);
     }
@@ -119,7 +124,8 @@ class ExterminatorToolBarInternal {
       // Hide toolbar temporarily
       this.toolbar.style.display = 'none';
       
-      // Capture screenshot using configured method
+      // Dynamically import screenshot function
+      const { captureScreenshot } = await import('./services/screenshot');
       this.screenshot = await captureScreenshot();
       
       // Show toolbar again
@@ -389,10 +395,20 @@ class ExterminatorToolBarInternal {
 
 export function init(config?: WidgetConfig) {
   // Check if we're in a browser environment
-  if (typeof window === 'undefined' || typeof document === 'undefined') {
+  if (!isClient) {
     console.warn('Exterminator Bar can only be initialized in a browser environment');
     return;
   }
 
-  return new ExterminatorToolBarInternal(config);
+  // Return a promise that resolves when the toolbar is initialized
+  return new Promise<ExterminatorToolBarInternal>((resolve) => {
+    // Ensure DOM is loaded before initializing
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        resolve(new ExterminatorToolBarInternal(config));
+      });
+    } else {
+      resolve(new ExterminatorToolBarInternal(config));
+    }
+  });
 }

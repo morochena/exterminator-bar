@@ -1,6 +1,12 @@
 import domtoimage from 'dom-to-image-more';
 
+const isClient = typeof window !== 'undefined' && typeof document !== 'undefined';
+
 export async function captureScreenshot(): Promise<string> {
+  if (!isClient) {
+    throw new Error('Screenshot capture is only available in browser environments');
+  }
+
   try {
     const node = document.documentElement;
     const scale = window.devicePixelRatio;
