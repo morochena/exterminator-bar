@@ -1,6 +1,6 @@
 import type { BugReport } from './core';
 
-export type IntegrationType = 'webhook' | 'github' | 'asana';
+export type IntegrationType = 'webhook' | 'github' | 'asana' | 'linear';
 
 export interface BaseConfig {
   type: IntegrationType;
@@ -30,7 +30,21 @@ export interface AsanaConfig extends BaseConfig {
   defaultSection?: string;
 }
 
-export type IntegrationConfig = WebhookConfig | GithubConfig | AsanaConfig;
+export interface LinearConfig extends BaseConfig {
+  type: 'linear';
+  apiKey: string;
+  teamId: string;
+  status?: string;
+  template?: string;
+  project?: string;
+  projectMilestone?: string;
+  cycle?: string | number;
+  estimate?: number;
+  labels?: string[];
+  priorityMap?: Record<string, 'urgent' | 'high' | 'medium' | 'low'>;
+}
+
+export type IntegrationConfig = WebhookConfig | GithubConfig | AsanaConfig | LinearConfig;
 
 export interface IntegrationResponse {
   success: boolean;

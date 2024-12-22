@@ -18,7 +18,7 @@ A lightweight, customizable widget for manual QA and bug reporting in web applic
 - [x] GitHub
 - [x] Asana
 - [ ] Jira
-- [ ] Linear
+- [x] Linear
 - [ ] Slack
 - [ ] Azure DevOps
 
@@ -237,6 +237,31 @@ const bugReporter = new ExterminatorBar({
     repo: 'your-repo',
     token: 'your-github-token',
     labels: ['bug', 'needs-triage']
+  }
+});
+```
+
+### Linear Integration
+
+```typescript
+const bugReporter = new ExterminatorBar({
+  integration: {
+    type: 'linear',
+    apiKey: 'lin_api_xxxxxxxxxxxx',     // Linear API Key
+    teamId: 'TEAM_ID',                  // Linear Team ID
+    status: 'Backlog',                  // Optional: Status name or UUID
+    template: 'template_uuid',          // Optional: Issue template UUID
+    project: 'Project Name',            // Optional: Project name or UUID
+    projectMilestone: 'Milestone',      // Optional: Project milestone name or UUID
+    cycle: 'Cycle 1',                   // Optional: Cycle number, name, or UUID
+    estimate: 3,                        // Optional: Point estimate (0-21)
+    labels: ['bug', 'reported'],        // Optional: Label names or UUIDs
+    priorityMap: {                      // Optional: Map severity to Linear priorities
+      critical: 'urgent',
+      high: 'high',
+      medium: 'medium',
+      low: 'low'
+    }
   }
 });
 ```
