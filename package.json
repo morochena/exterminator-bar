@@ -1,6 +1,6 @@
 {
   "name": "exterminator-bar",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "A lightweight, customizable widget for manual QA and bug reporting in web applications",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
