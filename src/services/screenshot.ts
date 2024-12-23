@@ -1,28 +1,10 @@
-import domtoimage from 'dom-to-image-more';
-
 const isClient = typeof window !== 'undefined' && typeof document !== 'undefined';
 
-interface ScreenshotOptions {
-  disableScreenshotBrowserApi?: boolean;
-}
-
-export async function captureScreenshot(options: ScreenshotOptions = {}): Promise<string> {
+export async function captureScreenshot(): Promise<string> {
   if (!isClient) {
     throw new Error('Screenshot capture is only available in browser environments');
   }
 
-  try {
-    if (!options.disableScreenshotBrowserApi) {
-      return await captureBrowserScreenshot();
-    }
-    return await captureDomToImageScreenshot();
-  } catch (error) {
-    console.error('Failed to capture screenshot:', error);
-    throw error;
-  }
-}
-
-async function captureBrowserScreenshot(): Promise<string> {
   try {
     // @ts-ignore - preferCurrentTab is a newer API feature not yet in TypeScript types
     const stream = await navigator.mediaDevices.getDisplayMedia({ preferCurrentTab: true });
@@ -49,30 +31,7 @@ async function captureBrowserScreenshot(): Promise<string> {
     // Convert to base64
     return canvas.toDataURL('image/png');
   } catch (error) {
-    console.error('Browser API screenshot failed:', error);
+    console.error('Failed to capture screenshot:', error);
     throw error;
   }
-}
-
-async function captureDomToImageScreenshot(): Promise<string> {
-  const node = document.documentElement;
-  const scale = window.devicePixelRatio;
-  
-  // Get the computed background color from either body or html
-  const bodyBg = window.getComputedStyle(document.body).backgroundColor;
-  const htmlBg = window.getComputedStyle(document.documentElement).backgroundColor;
-  // Use body background if it's not transparent, otherwise use html background, fallback to white
-  const bgcolor = bodyBg !== 'rgba(0, 0, 0, 0)' ? bodyBg : (htmlBg !== 'rgba(0, 0, 0, 0)' ? htmlBg : '#ffffff');
-  
-  return await domtoimage.toPng(node, {
-    width: node.scrollWidth * scale,
-    height: node.scrollHeight * scale,
-    style: {
-      transform: `scale(${scale})`,
-      transformOrigin: 'top left',
-      width: `${node.scrollWidth}px`,
-      height: `${node.scrollHeight}px`,
-    },
-    bgcolor
-  });
 } 

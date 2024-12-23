@@ -59,9 +59,6 @@ init({
 ### Core Options
 ```typescript
 interface WidgetConfig {
-  // Disable browser's native screenshot API and use canvas-based fallback
-  disableScreenshotBrowserApi?: boolean;
-
   // Event callbacks
   callbacks?: {
     onSubmit?: (report: BugReport) => Promise<void>;
@@ -171,6 +168,24 @@ init({
   }
 });
 ```
+
+## Browser Compatibility
+
+Exterminator Bar uses modern browser APIs for screen capture and recording. Here are the minimum browser versions required:
+
+- Chrome: 72+
+- Firefox: 66+
+- Edge: 79+ (Chromium-based)
+- Safari: 13+
+- Opera: 60+
+
+The core functionality requires `navigator.mediaDevices.getDisplayMedia` API support. Some features like `preferCurrentTab` for tab-specific capture are only available in newer browser versions:
+
+- Chrome: 103+ (for `preferCurrentTab`)
+- Firefox: 102+ (for `preferCurrentTab`)
+- Edge: 103+ (for `preferCurrentTab`)
+
+For older browsers, you may need to request full screen sharing permissions from users.
 
 ## Contributing
 

@@ -10,7 +10,6 @@ const isClient = typeof window !== 'undefined' && typeof document !== 'undefined
 
 export interface WidgetConfig {
   integration?: IntegrationConfig;
-  disableScreenshotBrowserApi?: boolean;
   callbacks?: {
     onSubmit?: (report: BugReport) => Promise<void>;
     onError?: (error: Error) => void;
@@ -127,9 +126,7 @@ class ExterminatorToolBarInternal {
       
       // Dynamically import screenshot function
       const { captureScreenshot } = await import('./services/screenshot');
-      this.screenshot = await captureScreenshot({ 
-        disableScreenshotBrowserApi: this.config?.disableScreenshotBrowserApi 
-      });
+      this.screenshot = await captureScreenshot();
       
       // Show toolbar again
       this.toolbar.style.display = 'flex';
