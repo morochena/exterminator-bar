@@ -41,6 +41,7 @@ export interface LinearConfig extends BaseConfig {
   cycle?: string | number;
   estimate?: number;
   labels?: string[];
+  labelMap?: Record<BugReport['type'], string>;
   priorityMap?: Record<string, 'urgent' | 'high' | 'medium' | 'low'>;
 }
 

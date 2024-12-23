@@ -13,7 +13,12 @@
  *   projectMilestone: 'Milestone',      // Optional: Project milestone name or UUID
  *   cycle: 'Cycle 1',                   // Optional: Cycle number, name, or UUID
  *   estimate: 3,                        // Optional: Point estimate (0-21)
- *   labels: ['bug', 'reported'],        // Optional: Label names or UUIDs
+ *   labelMap: {                         // Optional: Map report types to Linear label UUIDs
+ *     bug: 'bug-label-uuid',
+ *     feature: 'feature-label-uuid',
+ *     improvement: 'improvement-label-uuid',
+ *     question: 'question-label-uuid'
+ *   },
  *   priorityMap: {                      // Optional: Map severity to Linear priorities
  *     critical: 'urgent',
  *     high: 'high',
@@ -42,7 +47,7 @@ export class LinearIntegration implements Integration {
     }
   }
 
-  private async createIssue(title: string, description: string, priority: string): Promise<any> {
+  private async createIssue(title: string, description: string, priority: string, type: BugReport['type']): Promise<any> {
     const priorityLevel = (this.config.priorityMap || this.defaultPriorityMap)[priority] || 'medium';
     
     const mutation = `
@@ -67,6 +72,9 @@ export class LinearIntegration implements Integration {
       }
     `;
 
+    const labelId = this.config.labelMap?.[type];
+    const labelIds = labelId ? [labelId] : undefined;
+
     const variables = {
       input: {
         title,
@@ -79,7 +87,7 @@ export class LinearIntegration implements Integration {
         ...(this.config.projectMilestone && { projectMilestoneId: this.config.projectMilestone }),
         ...(this.config.cycle && { cycleId: this.config.cycle }),
         ...(this.config.estimate && { estimate: this.config.estimate }),
-        ...(this.config.labels && { labelIds: this.config.labels })
+        ...(labelIds && { labelIds })
       }
     };
 
@@ -187,7 +195,7 @@ export class LinearIntegration implements Integration {
       const title = `[${report.severity.toUpperCase()}] ${report.title || report.description.slice(0, 80)}${report.description.length > 80 ? '...' : ''}`;
       const description = this.formatDescription(report);
       
-      const response = await this.createIssue(title, description, report.severity);
+      const response = await this.createIssue(title, description, report.severity, report.type);
       
       return {
         success: true,

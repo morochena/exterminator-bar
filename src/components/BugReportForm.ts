@@ -1,8 +1,11 @@
 import type { BugReport, VisualFeedback } from '../types';
+import type { IntegrationConfig } from '../types';
 
 interface FormData extends Partial<BugReport> {
   selectedElement?: VisualFeedback['selectedElement'];
 }
+
+type ReportType = 'bug' | 'feature' | 'improvement' | 'question';
 
 export class BugReportForm {
   private container: HTMLElement;
@@ -13,12 +16,14 @@ export class BugReportForm {
     }
   };
   private onSubmit?: (report: BugReport) => void;
+  private config?: { integration?: IntegrationConfig };
 
   constructor(
     screenshot: string | null,
     screenRecording: VisualFeedback['screenRecording'] | null,
     selectedElement: VisualFeedback['selectedElement'] | null,
-    onSubmit?: (report: BugReport) => void
+    onSubmit?: (report: BugReport) => void,
+    config?: { integration?: IntegrationConfig }
   ) {
     this.container = this.createContainer();
     this.formData.visualFeedback = {
@@ -28,6 +33,7 @@ export class BugReportForm {
     };
     this.formData.selectedElement = selectedElement || undefined;
     this.onSubmit = onSubmit;
+    this.config = config;
     
     document.body.appendChild(this.container);
     this.render();
@@ -49,6 +55,28 @@ export class BugReportForm {
       padding: 20px;
     `;
     return container;
+  }
+
+  private getTypeOptions(): string {
+    const defaultTypes: Array<{ value: ReportType; label: string }> = [
+      { value: 'bug', label: 'Bug' },
+      { value: 'feature', label: 'Feature Request' },
+      { value: 'improvement', label: 'Improvement' },
+      { value: 'question', label: 'Question' }
+    ];
+
+    // If we have a Linear integration with labelMap, only show types that have corresponding labels
+    if (this.config?.integration?.type === 'linear' && this.config.integration.labelMap) {
+      return defaultTypes
+        .filter(type => this.config?.integration?.type === 'linear' && this.config.integration.labelMap?.[type.value])
+        .map(type => `<option value="${type.value}">${type.label}</option>`)
+        .join('');
+    }
+
+    // Otherwise show all default types
+    return defaultTypes
+      .map(type => `<option value="${type.value}">${type.label}</option>`)
+      .join('');
   }
 
   private render(): void {
@@ -79,10 +107,7 @@ export class BugReportForm {
       <div class="form-group">
         <label for="type">Type</label>
         <select id="type" required>
-          <option value="bug">Bug</option>
-          <option value="feature">Feature Request</option>
-          <option value="improvement">Improvement</option>
-          <option value="question">Question</option>
+          ${this.getTypeOptions()}
         </select>
       </div>
 

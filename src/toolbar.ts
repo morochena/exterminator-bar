@@ -213,7 +213,8 @@ class ExterminatorToolBarInternal {
       this.screenshot,
       this.screenRecordingData,
       null,
-      this.handleSubmit.bind(this)
+      this.handleSubmit.bind(this),
+      { integration: this.config?.integration }
     );
 
     // Clear state when form is destroyed (happens on both cancel and submit)

@@ -252,6 +252,17 @@ ${JSON.stringify(report.selectedElement, null, 2)}
     import { init } from '../src/index.ts';
 
     init({
+      integration: {
+        type: 'linear',
+        apiKey: import.meta.env.VITE_LINEAR_API_KEY,
+        teamId: '3093eeac-a23c-4e2a-955c-6db86ff69522',
+        project: '3ece1aac-00bb-4ff5-8f35-d5dbab86c8a9',
+        labelMap: {
+          bug: '6bc9009b-849c-4785-8475-4d786be06cf2',
+          improvement: '9bc4b656-b781-43d4-9007-4dd32a05fe26',
+          feature: '0602350d-c6b7-46d9-be98-4af237f035fe'
+        }
+      }
     });
   </script>
 </body>
