@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '@theme/Layout';
-import { init, BugReport } from 'exterminator-bar';
+import { BugReport } from 'exterminator-bar';
+import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
+
 
 // Helper function to get severity badge color
 const getSeverityColor = (severity: string) => {
@@ -18,15 +20,18 @@ export default function Demo(): JSX.Element {
   const [selectedReport, setSelectedReport] = useState<BugReport | null>(null);
 
   useEffect(() => {
-    // Initialize Exterminator Bar with demo configuration
-    init({
-      callbacks: {
-        onSubmit: async (report) => {
-          console.log('Bug report submitted:', report);
-          setReports(prev => [report, ...prev]);
-        }
-      }
-    });
+    if (ExecutionEnvironment.canUseDOM) {
+      import('exterminator-bar').then(({init}) => {
+      init({
+        callbacks: {
+          onSubmit: async (report) => {
+            console.log('Bug report submitted:', report);
+            setReports(prev => [report, ...prev]);
+            }
+          }
+        });
+      });
+    }
   }, []);
 
   return (
