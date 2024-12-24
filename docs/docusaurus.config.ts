@@ -10,10 +10,10 @@ const config: Config = {
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://your-domain.com',
+  url: 'https://morochena.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: '/exterminator-bar/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -64,6 +64,11 @@ const config: Config = {
           label: 'Documentation',
         },
         {
+          to: '/demo',
+          label: 'Live Demo',
+          position: 'left',
+        },
+        {
           href: 'https://github.com/morochena/exterminator-bar',
           label: 'GitHub',
           position: 'right',
@@ -84,6 +89,10 @@ const config: Config = {
               label: 'API Reference',
               to: '/docs/api',
             },
+            {
+              label: 'Live Demo',
+              to: '/demo',
+            },
           ],
         },
         {
@@ -92,6 +101,10 @@ const config: Config = {
             {
               label: 'GitHub',
               href: 'https://github.com/morochena/exterminator-bar',
+            },
+            {
+              label: 'NPM',
+              href: 'https://www.npmjs.com/package/exterminator-bar',
             },
           ],
         },
