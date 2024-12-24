@@ -1,8 +1,4 @@
----
-sidebar_position: 4
----
-
-# Custom Webhook Integration
+# Custom Webhook
 
 For maximum flexibility, Exterminator Bar supports custom webhook integrations. This allows you to send bug reports to any endpoint of your choice, making it compatible with any bug tracking or project management system.
 

@@ -1,8 +1,4 @@
----
-sidebar_position: 1
----
-
-# GitHub Integration
+# GitHub
 
 Exterminator Bar can automatically create GitHub issues from bug reports. This integration allows your team to seamlessly track and manage reported bugs in your GitHub repository.
 

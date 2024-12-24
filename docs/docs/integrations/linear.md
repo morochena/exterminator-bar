@@ -1,8 +1,4 @@
----
-sidebar_position: 2
----
-
-# Linear Integration
+# Linear
 
 Exterminator Bar integrates with Linear to streamline your bug tracking workflow. Bug reports can be automatically converted into Linear issues, complete with all relevant information and attachments.
 

@@ -1,8 +1,4 @@
----
-sidebar_position: 3
----
-
-# Asana Integration
+# Asana
 
 Exterminator Bar can automatically create Asana tasks from bug reports, helping teams that use Asana for project management to track and manage reported issues efficiently.
 

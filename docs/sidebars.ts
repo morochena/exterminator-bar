@@ -26,12 +26,17 @@ const sidebars: SidebarsConfig = {
       label: 'API Reference',
     },
     {
+      type: 'doc',
+      label: 'Integrations Overview',
+      id: 'integrations',
+    },
+    {
       type: 'category',
       label: 'Integrations',
       items: [
+        'integrations/asana',
         'integrations/github',
         'integrations/linear',
-        'integrations/asana',
         'integrations/webhook',
       ],
     },
