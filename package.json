@@ -17,7 +17,10 @@
     "build:lib": "vite build",
     "build": "npm run build:lib && npm run build:types",
     "release": "git tag v$(node -p \"require('./package.json').version\") && git push origin v$(node -p \"require('./package.json').version\") && gh release create v$(node -p \"require('./package.json').version\") --generate-notes",
-    "test": "vitest run"
+    "test": "vitest run",
+    "docs:dev": "cd docs && npm run start",
+    "docs:build": "cd docs && npm run build",
+    "docs:serve": "cd docs && npm run serve"
   },
   "dependencies": {
     "fabric": "^5.3.0"
