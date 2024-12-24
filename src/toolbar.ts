@@ -128,10 +128,7 @@ class ExterminatorToolBarInternal {
       const { captureScreenshot } = await import('./services/screenshot');
       this.screenshot = await captureScreenshot();
       
-      // Show toolbar again
-      this.toolbar.style.display = 'flex';
-      
-      // Initialize annotator
+      // Initialize annotator (keep toolbar hidden)
       this.showAnnotator();
     } catch (error) {
       console.error('Screenshot failed:', error);
@@ -274,6 +271,9 @@ class ExterminatorToolBarInternal {
     const container = document.querySelector('div[style*="z-index: 10001"]');
     container?.remove();
 
+    // Show the main toolbar again
+    this.toolbar.style.display = 'flex';
+
     // Open the bug report form
     this.handleBugReport();
   }
@@ -281,6 +281,8 @@ class ExterminatorToolBarInternal {
   private showAnnotator(): void {
     if (!this.screenshot) return;
 
+    // Keep main toolbar hidden by not showing it here
+    
     // Create annotation container
     const container = document.createElement('div');
     container.style.cssText = `
@@ -363,6 +365,9 @@ class ExterminatorToolBarInternal {
       
       // Remove annotation container
       container.remove();
+
+      // Show the main toolbar again
+      this.toolbar.style.display = 'flex';
     };
 
     annotationToolbar.appendChild(mainTools);
