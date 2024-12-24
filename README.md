@@ -2,8 +2,8 @@
 
 A lightweight, customizable widget for manual QA and bug reporting in web applications. Capture screenshots, record screen sessions, add annotations, and generate detailed bug reports without leaving the page.
 
-📚 [View Documentation](https://morochena.github.io/exterminator-bar)
-📺 [View Demo](https://morochena.github.io/exterminator-bar/demo)
+- 📚 [View Documentation](https://morochena.github.io/exterminator-bar)
+- 📺 [View Demo](https://morochena.github.io/exterminator-bar/demo)
 
 ## Quick Start
 
