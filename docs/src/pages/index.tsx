@@ -62,13 +62,13 @@ export default function Home(): JSX.Element {
                 </Link>
                 <Link
                   className="button button--secondary button--lg"
-                  to="/docs/category/api-reference"
+                  to="/docs/api"
                   style={{ marginRight: '1rem' }}>
                   API Reference
                 </Link>
                 <Link
                   className="button button--secondary button--lg"
-                  to="/docs/category/integrations">
+                  to="/docs/integrations">
                   Integrations
                 </Link>
               </div>
