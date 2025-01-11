@@ -19,6 +19,7 @@ export class TokenSetupForm {
   private createContainer(): HTMLElement {
     const container = document.createElement('div');
     container.style.cssText = `
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       position: fixed;
       top: 0;
       left: 0;

@@ -97,6 +97,7 @@ export class BugReportForm {
   private render(): void {
     const form = document.createElement('form');
     form.style.cssText = `
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       background: white;
       padding: 20px;
       border-radius: 8px;
