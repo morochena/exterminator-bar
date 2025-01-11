@@ -152,7 +152,6 @@ init({
     type: 'asana',
     token: 'your-asana-token',
     projectId: 'project-id',
-    workspace: 'workspace-id',
     tags: ['bug']
   }
 });
