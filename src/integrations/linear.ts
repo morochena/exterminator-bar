@@ -31,100 +31,106 @@
 import type { BugReport } from '../types';
 import type { Integration, LinearConfig, IntegrationResponse } from '../types';
 
-export class LinearIntegration implements Integration {
-  private baseUrl = 'https://api.linear.app/graphql';
-  private defaultPriorityMap: Record<string, 'urgent' | 'high' | 'medium' | 'low'> = {
-    critical: 'urgent',
-    high: 'high',
-    medium: 'medium',
-    low: 'low',
-    minor: 'low'
-  };
+interface LinearIssueInput {
+  title: string;
+  description: string;
+  teamId: string;
+  priority: number;
+  stateId?: string;
+  templateId?: string;
+  projectId?: string;
+  projectMilestoneId?: string;
+  cycleId?: string;
+  estimate?: number;
+  labelIds?: string[];
+}
 
-  constructor(private config: LinearConfig) {
-    if (!config.apiKey || !config.teamId) {
-      throw new Error('Linear API key and team ID are required');
-    }
+export class LinearIntegration implements Integration {
+  private teamId: string;
+  private token: string;
+  private status?: string;
+  private template?: string;
+  private project?: string;
+  private projectMilestone?: string;
+  private cycle?: string;
+  private estimate?: number;
+  private labelMap?: Record<BugReport['type'], string>;
+  private priorityMap?: Record<string, 'urgent' | 'high' | 'medium' | 'low'>;
+
+  static getSetupInstructions(): string {
+    return `
+      <ol>
+        <li>Go to Linear Settings > My Account > API Keys</li>
+        <li>Create a new API key</li>
+        <li>Copy the key and paste it below</li>
+      </ol>
+    `;
   }
 
-  private async createIssue(title: string, description: string, priority: string, type: BugReport['type']): Promise<any> {
-    const priorityLevel = (this.config.priorityMap || this.defaultPriorityMap)[priority] || 'medium';
-    
-    const mutation = `
-      mutation IssueCreate($input: IssueCreateInput!) {
-        issueCreate(input: $input) {
-          success
-          issue {
-            id
-            identifier
-            url
-            title
-            priority
-            estimate
-            labels {
-              nodes {
+  constructor(config: LinearConfig) {
+    this.teamId = config.teamId;
+    this.token = config.token;
+    this.status = config.status;
+    this.template = config.template;
+    this.project = config.project;
+    this.projectMilestone = config.projectMilestone;
+    this.cycle = config.cycle ? String(config.cycle) : undefined;
+    this.estimate = config.estimate;
+    this.labelMap = config.labelMap;
+    this.priorityMap = config.priorityMap;
+  }
+
+  async submit(report: BugReport): Promise<IntegrationResponse> {
+    const token = localStorage.getItem('exterminator_linear_token') || this.token;
+    try {
+      const issueData = this.formatIssue(report);
+      const response = await fetch('https://api.linear.app/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token,
+        },
+        body: JSON.stringify({
+          query: `mutation CreateIssue($input: IssueCreateInput!) {
+            issueCreate(input: $input) {
+              success
+              issue {
                 id
-                name
+                identifier
+                url
               }
             }
+          }`,
+          variables: {
+            input: issueData
           }
-        }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Linear API error! status: ${response.status}`);
       }
-    `;
 
-    const labelId = this.config.labelMap?.[type];
-    const labelIds = labelId ? [labelId] : undefined;
-
-    const variables = {
-      input: {
-        title,
-        description,
-        teamId: this.config.teamId,
-        priority: this.getPriorityLevel(priorityLevel),
-        ...(this.config.status && { stateId: this.config.status }),
-        ...(this.config.template && { templateId: this.config.template }),
-        ...(this.config.project && { projectId: this.config.project }),
-        ...(this.config.projectMilestone && { projectMilestoneId: this.config.projectMilestone }),
-        ...(this.config.cycle && { cycleId: this.config.cycle }),
-        ...(this.config.estimate && { estimate: this.config.estimate }),
-        ...(labelIds && { labelIds })
+      const data = await response.json();
+      
+      if (data.errors) {
+        throw new Error(data.errors[0].message);
       }
-    };
 
-    const response = await fetch(this.baseUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': this.config.apiKey,
-        'Linear-Client': 'exterminator-bar'
-      },
-      body: JSON.stringify({
-        query: mutation,
-        variables
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`Linear API error! status: ${response.status}`);
+      return {
+        success: true,
+        data: data.data.issueCreate.issue
+      };
+    } catch (error) {
+      // If unauthorized, clear the stored token
+      if (error instanceof Error && error.message.toLowerCase().includes('unauthorized')) {
+        localStorage.removeItem('exterminator_linear_token');
+      }
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to create Linear issue'
+      };
     }
-
-    const data = await response.json();
-    
-    if (data.errors) {
-      throw new Error(data.errors[0].message);
-    }
-
-    return data.data.issueCreate;
-  }
-
-  private getPriorityLevel(priority: string): number {
-    const priorityMap = {
-      'urgent': 1,
-      'high': 2,
-      'medium': 3,
-      'low': 4
-    };
-    return priorityMap[priority as keyof typeof priorityMap] || 3;
   }
 
   private formatDescription(report: BugReport): string {
@@ -182,29 +188,37 @@ export class LinearIntegration implements Integration {
     return sections.join('\n');
   }
 
-  async submit(report: BugReport): Promise<IntegrationResponse> {
-    try {
-      const title = `[${report.severity.toUpperCase()}] ${report.title || report.description.slice(0, 80)}${report.description.length > 80 ? '...' : ''}`;
-      const description = this.formatDescription(report);
-      
-      const response = await this.createIssue(title, description, report.severity, report.type);
-      
-      return {
-        success: true,
-        data: {
-          issueId: response.issue.identifier,
-          issueUrl: response.issue.url,
-          title: response.issue.title,
-          priority: response.issue.priority,
-          estimate: response.issue.estimate,
-          labels: response.issue.labels.nodes
-        }
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to create Linear issue'
-      };
-    }
+  private formatIssue(report: BugReport): LinearIssueInput {
+    const priorityLevel = (this.priorityMap || {
+      critical: 'urgent',
+      high: 'high',
+      medium: 'medium',
+      low: 'low',
+      minor: 'low'
+    })[report.severity] || 'medium';
+    
+    return {
+      title: `[${report.severity.toUpperCase()}] ${report.title || report.description.slice(0, 80)}${report.description.length > 80 ? '...' : ''}`,
+      description: this.formatDescription(report),
+      teamId: this.teamId,
+      priority: this.getPriorityLevel(priorityLevel),
+      ...(this.status && { stateId: this.status }),
+      ...(this.template && { templateId: this.template }),
+      ...(this.project && { projectId: this.project }),
+      ...(this.projectMilestone && { projectMilestoneId: this.projectMilestone }),
+      ...(this.cycle && { cycleId: this.cycle }),
+      ...(this.estimate && { estimate: this.estimate }),
+      ...(this.labelMap?.[report.type] && { labelIds: [this.labelMap[report.type]] })
+    };
   }
-} 
+
+  private getPriorityLevel(priority: string): number {
+    const priorityMap: Record<string, number> = {
+      'urgent': 1,
+      'high': 2,
+      'medium': 3,
+      'low': 4
+    };
+    return priorityMap[priority] || 3;
+  }
+}

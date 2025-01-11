@@ -30,23 +30,43 @@ import type { Integration, GithubConfig, IntegrationResponse } from '../types';
 
 export class GithubIntegration implements Integration {
   private baseUrl = 'https://api.github.com';
+  private token: string;
+  private owner: string;
+  private repo: string;
+  private labels?: string[];
 
-  constructor(private config: GithubConfig) {
-    if (!config.owner || !config.repo || !config.token) {
-      throw new Error('GitHub owner, repo, and token are required');
+  static getSetupInstructions(): string {
+    return `
+      <ol>
+        <li>Go to GitHub Settings > Developer Settings > Personal Access Tokens</li>
+        <li>Generate a new token with 'repo' scope</li>
+        <li>Copy the token and paste it below</li>
+      </ol>
+    `;
+  }
+
+  constructor(config: GithubConfig) {
+    if (!config.owner || !config.repo) {
+      throw new Error('GitHub owner and repo are required');
     }
+    
+    this.token = config.token;
+    this.owner = config.owner;
+    this.repo = config.repo;
+    this.labels = config.labels;
   }
 
   async submit(report: BugReport): Promise<IntegrationResponse> {
     try {
+      const token = localStorage.getItem('exterminator_github_token') || this.token;
       const issueData = this.formatIssue(report);
       const response = await fetch(
-        `${this.baseUrl}/repos/${this.config.owner}/${this.config.repo}/issues`,
+        `${this.baseUrl}/repos/${this.owner}/${this.repo}/issues`,
         {
           method: 'POST',
           headers: {
             'Accept': 'application/vnd.github.v3+json',
-            'Authorization': `token ${this.config.token}`,
+            'Authorization': `token ${token}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(issueData)
@@ -64,6 +84,12 @@ export class GithubIntegration implements Integration {
         data
       };
     } catch (error) {
+      // If unauthorized, clear the stored token
+      if (error instanceof Error && 
+          (error.message.toLowerCase().includes('unauthorized') || 
+           error.message.toLowerCase().includes('bad credentials'))) {
+        localStorage.removeItem('exterminator_github_token');
+      }
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error occurred'
@@ -76,7 +102,7 @@ export class GithubIntegration implements Integration {
     body: string;
     labels: string[];
   } {
-    const labels = [...(this.config.labels || [])];
+    const labels = [...(this.labels || [])];
     labels.push(report.severity);
     labels.push(report.type);
 

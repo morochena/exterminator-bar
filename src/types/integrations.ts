@@ -9,6 +9,7 @@ export interface BaseConfig {
 export interface WebhookConfig extends BaseConfig {
   type: 'webhook';
   url: string;
+  token: string;
   method?: 'POST' | 'PUT' | 'PATCH';
   headers?: Record<string, string>;
   transformPayload?: (report: BugReport) => unknown;
@@ -32,7 +33,7 @@ export interface AsanaConfig extends BaseConfig {
 
 export interface LinearConfig extends BaseConfig {
   type: 'linear';
-  apiKey: string;
+  token: string;
   teamId: string;
   status?: string;
   template?: string;

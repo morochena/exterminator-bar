@@ -35,6 +35,16 @@ export class AsanaIntegration implements Integration {
   private project: string;
   private defaultSection?: string;
 
+  static getSetupInstructions(): string {
+    return `
+      <ol>
+        <li>Go to Asana Developer Settings <a href="https://app.asana.com/0/my-apps" target="_blank">here</a></li>
+        <li>Create a Personal Access Token</li>
+        <li>Copy the token and paste it below</li>
+      </ol>
+    `;
+  }
+
   constructor(config: AsanaConfig) {
     this.token = config.token;
     this.project = config.project;
@@ -67,6 +77,10 @@ export class AsanaIntegration implements Integration {
         },
       };
     } catch (error) {
+      // If unauthorized, clear the stored token
+      if (error instanceof Error && error.message.toLowerCase().includes('unauthorized')) {
+        localStorage.removeItem('exterminator_asana_token');
+      }
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to create Asana task',
@@ -75,10 +89,11 @@ export class AsanaIntegration implements Integration {
   }
 
    private async createTask(title: string, description: string): Promise<any> {
+    const token = localStorage.getItem('exterminator_asana_token') || this.token;
     const response = await fetch('https://app.asana.com/api/1.0/tasks', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${this.token}`,
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },

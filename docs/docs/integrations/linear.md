@@ -14,13 +14,24 @@ import { init } from 'exterminator-bar';
 init({
   integration: {
     type: 'linear',
-    apiKey: 'lin_api_xxxxxxxxxxxx',
-    teamId: '3093eeac-a23c-4e2a-955c-6db86ff69522',  // Example ID
-    project: '3ece1aac-00bb-4ff5-8f35-d5dbab86c8a9',  // Example ID
+    token: 'lin_api_xxxxxxxxxxxx',
+    teamId: 'TEAM_ID',
+    status: 'Todo',
+    template: 'TEMPLATE_ID',
+    project: 'PROJECT_ID',
+    projectMilestone: 'MILESTONE_ID',
+    cycle: 'CYCLE_ID',
+    estimate: 2,
     labelMap: {
-      bug: '6bc9009b-849c-4785-8475-4d786be06cf2',      // Example ID
-      improvement: '9bc4b656-b781-43d4-9007-4dd32a05fe26', // Example ID
-      feature: '0602350d-c6b7-46d9-be98-4af237f035fe'     // Example ID
+      bug: 'Bug',
+      feature: 'Feature Request',
+      improvement: 'Enhancement'
+    },
+    priorityMap: {
+      critical: 'urgent',
+      high: 'high',
+      medium: 'medium',
+      low: 'low'
     }
   }
 });
@@ -68,8 +79,8 @@ Use these IDs to configure your integration as shown in the setup example above.
 
 | Option | Type | Required | Description |
 |--------|------|----------|-------------|
-| `apiKey` | string | Yes | Your Linear API key |
-| `teamId` | string | Yes | The ID of the team where issues will be created (from GraphQL query) |
+| `token` | string | Yes | Your Linear API key |
+| `teamId` | string | Yes | The ID of your Linear team |
 | `project` | string | No | Project ID to associate issues with (from GraphQL query) |
 | `labelMap` | object | No | Mapping of issue types to Linear label IDs (from GraphQL query) |
 | `status` | string | No | Initial status for created issues (defaults to 'Backlog') |

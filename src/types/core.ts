@@ -1,3 +1,5 @@
+import type { IntegrationConfig } from './integrations';
+
 export interface EnvironmentInfo {
   browser: string;
   browserVersion: string;
@@ -47,8 +49,8 @@ export interface BugReport {
   title: string;
   description: string;
   type: 'bug' | 'feature' | 'improvement' | 'question';
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  status: 'draft' | 'submitted' | 'in-review';
+  severity: 'critical' | 'high' | 'medium' | 'low';
+  status: 'draft' | 'submitted' | 'in_progress' | 'resolved';
   url: string;
   createdAt: string;
   submittedBy?: string;
@@ -59,12 +61,13 @@ export interface BugReport {
   
   // Optional fields that can be customized
   labels?: string[];
-  customFields?: Record<string, unknown>;
+  customFields?: Record<string, string>;
   attachments?: Array<{
     type: string;
     content: string; // Base64 or URL
     name: string;
   }>;
+  config?: { integration?: IntegrationConfig };
 }
 
 export interface FormData {

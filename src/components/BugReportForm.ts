@@ -1,5 +1,11 @@
 import type { BugReport, VisualFeedback } from '../types';
-import type { IntegrationConfig } from '../types';
+import type { 
+  IntegrationConfig, 
+  AsanaConfig, 
+  GithubConfig, 
+  LinearConfig 
+} from '../types';
+import { TokenSetupForm } from './TokenSetupForm';
 
 interface FormData extends Partial<BugReport> {
   selectedElement?: VisualFeedback['selectedElement'];
@@ -72,6 +78,20 @@ export class BugReportForm {
     return defaultTypes
       .map(type => `<option value="${type.value}">${type.label}</option>`)
       .join('');
+  }
+
+  private hasSavedTokens(): boolean {
+    const integrationTypes = ['asana', 'github', 'linear'];
+    return integrationTypes.some(type => 
+      localStorage.getItem(`exterminator_${type}_token`) !== null
+    );
+  }
+
+  private clearSavedTokens(): void {
+    const integrationTypes = ['asana', 'github', 'linear'];
+    integrationTypes.forEach(type => {
+      localStorage.removeItem(`exterminator_${type}_token`);
+    });
   }
 
   private render(): void {
@@ -150,6 +170,11 @@ ${JSON.stringify(this.formData.selectedElement, null, 2)}
       ` : ''}
 
       <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+        ${this.hasSavedTokens() ? `
+          <button type="button" class="button" style="background: #dc3545;" onclick="this.closest('form').dispatchEvent(new Event('clear-tokens'))">
+            Clear Saved Tokens
+          </button>
+        ` : ''}
         <button type="button" class="button" style="background: #6c757d;" onclick="this.closest('form').dispatchEvent(new Event('cancel'))">
           Cancel
         </button>
@@ -234,6 +259,12 @@ ${JSON.stringify(this.formData.selectedElement, null, 2)}
     // Add event listeners
     form.addEventListener('submit', this.handleSubmit.bind(this));
     form.addEventListener('cancel', () => this.container.remove());
+    form.addEventListener('clear-tokens', () => {
+      this.clearSavedTokens();
+      // Re-render the form to update the button visibility
+      this.container.innerHTML = '';
+      this.render();
+    });
   }
 
   private async handleSubmit(event: Event): Promise<void> {
@@ -274,7 +305,7 @@ ${JSON.stringify(this.formData.selectedElement, null, 2)}
       };
 
       try {
-        await this.onSubmit?.(report);
+        await this.submitWithTokenHandling(report);
         
         // Show success message
         feedbackMessage.textContent = 'Bug report submitted successfully!';
@@ -297,5 +328,88 @@ ${JSON.stringify(this.formData.selectedElement, null, 2)}
       submitButton.disabled = false;
       submitButton.textContent = 'Submit Report';
     }
+  }
+
+  private async submitWithTokenHandling(report: BugReport): Promise<void> {
+    if (!this.config?.integration) {
+      await this.onSubmit?.(report);
+      return;
+    }
+
+    const integration = this.config.integration;
+    const token = localStorage.getItem(`exterminator_${integration.type}_token`) || integration.token;
+
+    if (!token) {
+      await this.handleTokenSetup(report);
+      return;
+    }
+    
+    try {
+      // Just pass the integration config directly
+      const reportWithConfig: BugReport = {
+        ...report,
+        config: { integration }
+      };
+      
+      await this.onSubmit?.(reportWithConfig);
+    } catch (error) {
+      // If unauthorized, show token setup
+      if (error instanceof Error && error.message.toLowerCase().includes('unauthorized')) {
+        await this.handleTokenSetup(report);
+      } else {
+        throw error;
+      }
+    }
+  }
+
+  private handleTokenSetup(report: BugReport): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (!this.config?.integration) {
+        reject(new Error('No integration configured'));
+        return;
+      }
+
+      const integration = this.config.integration;
+
+      new TokenSetupForm(integration.type, async (token: string) => {
+        const reportWithToken: BugReport = {
+          ...report,
+          config: {
+            integration: integration.type === 'asana' ? {
+              type: 'asana' as const,
+              token,
+              project: (integration as AsanaConfig).project,
+              workspace: (integration as AsanaConfig).workspace,
+              defaultSection: (integration as AsanaConfig).defaultSection
+            } : integration.type === 'github' ? {
+              type: 'github' as const,
+              token,
+              owner: (integration as GithubConfig).owner,
+              repo: (integration as GithubConfig).repo,
+              labels: (integration as GithubConfig).labels
+            } : integration.type === 'linear' ? {
+              type: 'linear' as const,
+              token,
+              teamId: (integration as LinearConfig).teamId,
+              status: (integration as LinearConfig).status,
+              template: (integration as LinearConfig).template,
+              project: (integration as LinearConfig).project,
+              projectMilestone: (integration as LinearConfig).projectMilestone,
+              cycle: (integration as LinearConfig).cycle,
+              estimate: (integration as LinearConfig).estimate,
+              labelMap: (integration as LinearConfig).labelMap,
+              priorityMap: (integration as LinearConfig).priorityMap
+            } : integration // webhook case
+          }
+        };
+
+        try {
+          await this.onSubmit?.(reportWithToken);
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
   }
 } 

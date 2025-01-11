@@ -252,11 +252,26 @@ ${JSON.stringify(report.selectedElement, null, 2)}
     import { init } from '../src/index.ts';
 
     init({
+      tools: {
+        screenshot: {
+          enabled: true,
+          hotkey: 'Ctrl+Shift+S'
+        },
+        screenRecording: {
+          enabled: true,
+          hotkey: 'Ctrl+Shift+R'
+        }
+      },
       integration: {
-        type: 'asana',
-
-        project: import.meta.env.VITE_ASANA_PROJECT_ID,
-        defaultSection: import.meta.env.VITE_ASANA_DEFAULT_SECTION_ID
+        type: 'github',
+        owner: import.meta.env.VITE_GITHUB_OWNER,
+        repo: import.meta.env.VITE_GITHUB_REPO,
+        token: import.meta.env.VITE_GITHUB_TOKEN,
+        labels: {
+          bug: 'bug',
+          improvement: 'enhancement',
+          feature: 'feature-request'
+        }
       }
     });
   </script>
