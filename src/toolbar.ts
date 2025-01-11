@@ -9,6 +9,16 @@ import type { BugReport, VisualFeedback, IntegrationConfig } from './types';
 const isClient = typeof window !== 'undefined' && typeof document !== 'undefined';
 
 export interface WidgetConfig {
+  tools?: {
+    screenshot?: {
+      enabled?: boolean;
+      hotkey?: string;
+    };
+    screenRecording?: {
+      enabled?: boolean;
+      hotkey?: string;
+    };
+  };
   integration?: IntegrationConfig;
   callbacks?: {
     onSubmit?: (report: BugReport) => Promise<void>;
@@ -41,6 +51,42 @@ class ExterminatorToolBarInternal {
     }
     
     document.body.appendChild(this.toolbar);
+
+    // Set up hotkey listeners if configured
+    if (config?.tools?.screenshot?.hotkey || config?.tools?.screenRecording?.hotkey) {
+      this.setupHotkeys();
+    }
+  }
+
+  private setupHotkeys(): void {
+    document.addEventListener('keydown', (event) => {
+      // Convert event to hotkey string format (e.g., "Ctrl+Shift+S")
+      const pressedHotkey = this.getHotkeyString(event);
+      
+      // Check if it matches screenshot hotkey
+      if (this.config?.tools?.screenshot?.hotkey === pressedHotkey) {
+        event.preventDefault();
+        this.handleScreenshot();
+      }
+      
+      // Check if it matches screen recording hotkey
+      if (this.config?.tools?.screenRecording?.hotkey === pressedHotkey) {
+        event.preventDefault();
+        this.handleScreenRecording();
+      }
+    });
+  }
+
+  private getHotkeyString(event: KeyboardEvent): string {
+    const modifiers: string[] = [];
+    
+    if (event.ctrlKey || event.metaKey) modifiers.push('Ctrl');
+    if (event.shiftKey) modifiers.push('Shift');
+    if (event.altKey) modifiers.push('Alt');
+    
+    const key = event.key.length === 1 ? event.key.toUpperCase() : event.key;
+    
+    return [...modifiers, key].join('+');
   }
 
   private createToolbar(): HTMLElement {

@@ -82,13 +82,6 @@ interface WidgetConfig {
       hotkey?: string;
     };
 
-    // Element picker settings
-    elementPicker?: {
-      enabled: boolean;
-      highlightColor?: string;
-      hotkey?: string;
-    };
-
     // Annotation tools settings
     annotations?: {
       enabled: boolean;

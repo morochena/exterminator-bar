@@ -19,11 +19,6 @@ export interface WidgetConfig {
       enabled: boolean;
       hotkey?: string;
     };
-    elementPicker?: {
-      enabled: boolean;
-      highlightColor?: string;
-      hotkey?: string;
-    };
     annotations?: {
       enabled: boolean;
       defaultColor?: string;

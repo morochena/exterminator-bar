@@ -252,6 +252,16 @@ ${JSON.stringify(report.selectedElement, null, 2)}
     import { init } from '../src/index.ts';
 
     init({
+      tools: {
+        screenshot: {
+          enabled: true,
+          hotkey: 'Ctrl+Shift+S'
+        },
+        screenRecording: {
+          enabled: true,
+          hotkey: 'Ctrl+Shift+R'
+        }
+      },
       integration: {
         type: 'linear',
         apiKey: import.meta.env.VITE_LINEAR_API_KEY,
