@@ -1,7 +1,6 @@
-import type { IntegrationConfig } from '../types';
 import { AsanaIntegration } from '../integrations/asana';
 import { GithubIntegration } from '../integrations/github';
-import { LinearIntegration } from '../integrations/linear';
+import { LinearIntegration } from '../integrations/linear'; 
 
 export class TokenSetupForm {
   private container: HTMLElement;
