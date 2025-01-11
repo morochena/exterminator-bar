@@ -217,7 +217,7 @@ ${JSON.stringify(this.formData.selectedElement, null, 2)}
         
         // Show success message
         feedbackMessage.textContent = 'Bug report submitted successfully!';
-        feedbackMessage.className = 'feedback-success';
+        feedbackMessage.className = 'p-2.5 mb-4 rounded bg-green-100 text-green-800 border border-green-200';
         feedbackMessage.style.display = 'block';
         
         // Close form after a short delay
@@ -227,7 +227,7 @@ ${JSON.stringify(this.formData.selectedElement, null, 2)}
       } catch (error) {
         // Show error message with the actual error from the integration
         feedbackMessage.textContent = error instanceof Error ? error.message : 'Failed to submit bug report';
-        feedbackMessage.className = 'feedback-error';
+        feedbackMessage.className = 'p-2.5 mb-4 rounded bg-red-100 text-red-800 border border-red-200';
         feedbackMessage.style.display = 'block';
         throw error; // Re-throw to trigger the catch block below
       }

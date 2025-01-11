@@ -143,6 +143,7 @@ export class AsanaIntegration implements Integration {
   }
 
   private async uploadAttachment(taskId: string, fileUrl: string): Promise<any> {
+    const token = localStorage.getItem('exterminator_asana_token') || this.token;
     // First, fetch the file
     const fileResponse = await fetch(fileUrl);
     if (!fileResponse.ok) {
@@ -162,7 +163,7 @@ export class AsanaIntegration implements Integration {
     const response = await fetch('https://app.asana.com/api/1.0/attachments', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${this.token}`,
+        'Authorization': `Bearer ${token}`,
       },
       body: formData
     });
