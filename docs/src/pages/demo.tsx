@@ -184,15 +184,6 @@ export default function Demo(): JSX.Element {
                             </pre>
                           </div>
 
-                          {selectedReport.reproductionSteps && (
-                            <div className="margin-bottom--md">
-                              <strong>Steps to Reproduce:</strong>
-                              <pre>
-                                {JSON.stringify(selectedReport.reproductionSteps, null, 2)}
-                              </pre>
-                            </div>
-                          )}
-
                           {selectedReport.labels && selectedReport.labels.length > 0 && (
                             <div className="margin-bottom--md">
                               <strong>Labels:</strong>

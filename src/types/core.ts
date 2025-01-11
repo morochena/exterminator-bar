@@ -42,20 +42,6 @@ export interface VisualFeedback {
   };
 }
 
-export interface ReproductionSteps {
-  steps: Array<{
-    stepNumber: number;
-    description: string;
-    timestamp: string;
-  }>;
-  userActions?: Array<{
-    action: 'click' | 'input' | 'navigation' | 'other';
-    element?: string;
-    value?: string;
-    timestamp: string;
-  }>;
-}
-
 export interface BugReport {
   id: string;
   title: string;
@@ -70,7 +56,6 @@ export interface BugReport {
   // Related data
   environment: EnvironmentInfo;
   visualFeedback?: VisualFeedback;
-  reproductionSteps: ReproductionSteps;
   
   // Optional fields that can be customized
   labels?: string[];
@@ -89,5 +74,4 @@ export interface FormData {
   severity?: BugReport['severity'];
   visualFeedback?: VisualFeedback;
   selectedElement?: VisualFeedback['selectedElement'];
-  reproductionSteps: ReproductionSteps;
 } 

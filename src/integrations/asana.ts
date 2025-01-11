@@ -86,15 +86,6 @@ export class AsanaIntegration implements Integration {
       '</ul>',      
     ];
 
-    if (report.reproductionSteps?.steps.length > 0) {
-      sections.push('<strong>Reproduction Steps:</strong>');
-      sections.push('<ol>');
-      report.reproductionSteps.steps.forEach(step => {
-        sections.push(`<li>${step.description}</li>`);
-      });
-      sections.push('</ol>');
-    }
-
     if (report.customFields) {
       sections.push('<strong>Additional Information:</strong>');
       sections.push('<ul>');

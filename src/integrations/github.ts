@@ -92,8 +92,7 @@ export class GithubIntegration implements Integration {
   private generateIssueBody(report: BugReport): string {
     const sections = [
       this.formatSection('Description', report.description),
-      this.formatSection('Environment', this.formatEnvironment(report.environment)),
-      this.formatSection('Steps to Reproduce', this.formatReproductionSteps(report.reproductionSteps)),
+      this.formatSection('Environment', this.formatEnvironment(report.environment)), 
     ];
 
     if (report.visualFeedback?.screenshot) {
@@ -119,12 +118,6 @@ export class GithubIntegration implements Integration {
       `- Viewport: ${env.viewport.width}x${env.viewport.height}`,
       `- URL: ${env.currentUrl}`
     ].join('\n');
-  }
-
-  private formatReproductionSteps(steps: BugReport['reproductionSteps']): string {
-    return steps.steps
-      .map(step => `${step.stepNumber}. ${step.description}`)
-      .join('\n');
   }
 
   private formatSelectedElement(element: NonNullable<BugReport['visualFeedback']>['selectedElement']): string {

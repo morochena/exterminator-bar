@@ -9,12 +9,7 @@ type ReportType = 'bug' | 'feature' | 'improvement' | 'question';
 
 export class BugReportForm {
   private container: HTMLElement;
-  private formData: FormData = {
-    reproductionSteps: {
-      steps: [],
-      userActions: []
-    }
-  };
+  private formData: FormData = {}; 
   private onSubmit?: (report: BugReport) => void;
   private config?: { integration?: IntegrationConfig };
 
@@ -273,7 +268,6 @@ ${JSON.stringify(this.formData.selectedElement, null, 2)}
           userAgent: navigator.userAgent,
           currentUrl: window.location.href
         },
-        reproductionSteps: this.formData.reproductionSteps!,
         visualFeedback: this.formData.visualFeedback,
         labels: [],
         customFields: {}

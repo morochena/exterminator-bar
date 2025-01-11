@@ -139,14 +139,6 @@ export class LinearIntegration implements Integration {
       report.description,
     ];
 
-    if (report.reproductionSteps?.steps.length > 0) {
-      sections.push(
-        '',
-        '## Steps to Reproduce',
-        ...report.reproductionSteps.steps.map(step => `${step.stepNumber}. ${step.description}`)
-      );
-    }
-
     if (report.visualFeedback?.screenshot) {
       sections.push(
         '',
