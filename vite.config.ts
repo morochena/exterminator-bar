@@ -7,22 +7,26 @@ export default defineConfig({
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'ExterminatorBar',
       fileName: (format) => `index.${format === 'es' ? 'mjs' : format === 'umd' ? 'umd.js' : 'js'}`,
-      formats: ['es', 'umd', 'cjs'],
+      formats: ['es', 'umd', 'cjs']
     },
     rollupOptions: {
+      external: ['fabric'],
       output: {
-        exports: 'named',
-        format: 'umd',
-        name: 'ExterminatorBar',
-        extend: true,
-      },
-    },
-    sourcemap: true,
-    minify: 'terser',
+        assetFileNames: (assetInfo) => {
+          return assetInfo.name === 'style.css' ? 'index.css' : assetInfo.name || 'asset-[hash]';
+        },
+        globals: {
+          fabric: 'fabric'
+        }
+      }
+    }
   },
-  resolve: {
-    alias: {
-      '@': resolve(__dirname, './src')
+  css: {
+    postcss: {
+      plugins: [
+        require('tailwindcss'),
+        require('autoprefixer'),
+      ],
     }
   }
 }); 

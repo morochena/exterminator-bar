@@ -1,6 +1,7 @@
 import { AsanaIntegration } from '../integrations/asana';
 import { GithubIntegration } from '../integrations/github';
-import { LinearIntegration } from '../integrations/linear'; 
+import { LinearIntegration } from '../integrations/linear';
+import '../styles/main.css';
 
 export class TokenSetupForm {
   private container: HTMLElement;
@@ -18,20 +19,7 @@ export class TokenSetupForm {
 
   private createContainer(): HTMLElement {
     const container = document.createElement('div');
-    container.style.cssText = `
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.8);
-      z-index: 10002;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    `;
+    container.className = 'fixed inset-0 bg-black/80 z-[10002] flex justify-center items-center p-5 font-sans';
     return container;
   }
 
@@ -50,92 +38,36 @@ export class TokenSetupForm {
 
   private render(): void {
     const form = document.createElement('form');
-    form.style.cssText = `
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      width: 100%;
-      max-width: 500px;
-    `;
+    form.className = 'bg-white p-5 rounded-lg w-full max-w-lg';
 
     form.innerHTML = `
-      <h2 style="margin-top: 0; color: black !important;">Setup ${this.integrationType.charAt(0).toUpperCase() + this.integrationType.slice(1)} Integration</h2>
+      <h2 class="mt-0 mb-4 text-xl font-semibold text-gray-900">
+        Setup ${this.integrationType.charAt(0).toUpperCase() + this.integrationType.slice(1)} Integration
+      </h2>
       
-      <div class="form-group">
-        <p>To use this integration, you'll need to provide an access token. Here's how to get one:</p>
-        ${this.getInstructions()}
+      <div class="mb-4">
+        <p class="text-gray-700 mb-2">To use this integration, you'll need to provide an access token. Here's how to get one:</p>
+        <div class="text-gray-700">${this.getInstructions()}</div>
       </div>
 
-      <div class="form-group">
-        <label for="token">Access Token</label>
-        <input type="password" id="token" required>
-        <small style="color: #666; margin-top: 4px; display: block;">
+      <div class="mb-4">
+        <label for="token" class="block mb-1 font-medium text-sm text-gray-900">Access Token</label>
+        <input type="password" id="token" class="exterminator-form-input" required>
+        <small class="mt-1 text-sm text-gray-500 block">
           Your token will be stored in your browser's local storage.
         </small>
       </div>
 
-      <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
-        <button type="button" class="button" style="background: #6c757d;" onclick="this.closest('form').dispatchEvent(new Event('cancel'))">
+      <div class="flex gap-2.5 justify-end mt-5">
+        <button type="button" class="exterminator-btn-secondary" onclick="this.closest('form').dispatchEvent(new Event('cancel'))">
           Cancel
         </button>
-        <button type="submit" class="button" style="background: #28a745;">
+        <button type="submit" class="exterminator-btn-primary">
           Save Token
         </button>
       </div>
     `;
 
-    // Add styles
-    const style = document.createElement('style');
-    style.textContent = `
-      .form-group {
-        margin-bottom: 15px !important;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-      }
-      .form-group label {
-        display: block !important;
-        margin-bottom: 5px !important;
-        font-weight: 500 !important;
-        color: #000 !important;
-        font-size: 14px !important;
-      }
-      .form-group input[type="password"] {
-        width: 100% !important;
-        padding: 8px !important;
-        border: 1px solid #ddd !important;
-        border-radius: 4px !important;
-        font-size: 14px !important;
-        line-height: 1.4 !important;
-        box-sizing: border-box !important;
-        margin: 0 !important;
-        font-family: inherit !important;
-      }
-      .form-group input[type="password"]:focus {
-        outline: none !important;
-        border-color: #4a90e2 !important;
-        box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2) !important;
-      }
-      .button {
-        border: none !important;
-        padding: 8px 16px !important;
-        border-radius: 4px !important;
-        color: white !important;
-        cursor: pointer !important;
-        font-size: 14px !important;
-      }
-      .button:hover {
-        opacity: 0.9 !important;
-      }
-      ol {
-        margin: 10px 0 !important;
-        padding-left: 20px !important;
-      }
-      li {
-        margin-bottom: 5px !important;
-        color: #333 !important;
-      }
-    `;
-
-    form.appendChild(style);
     this.container.appendChild(form);
 
     // Add event listeners

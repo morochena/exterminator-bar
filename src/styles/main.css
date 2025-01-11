@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .exterminator-form-input {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+  }
+  
+  .exterminator-btn {
+    @apply px-4 py-2 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+  
+  .exterminator-btn-primary {
+    @apply exterminator-btn bg-green-600 text-white hover:bg-green-700 focus:ring-green-500;
+  }
+  
+  .exterminator-btn-secondary {
+    @apply exterminator-btn bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500;
+  }
+  
+  .exterminator-btn-danger {
+    @apply exterminator-btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+  }
+} 

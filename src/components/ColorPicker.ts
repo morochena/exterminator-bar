@@ -1,3 +1,5 @@
+import '../styles/main.css';
+
 export class ColorPicker {
   private container: HTMLElement;
   private colors = [
@@ -22,18 +24,7 @@ export class ColorPicker {
 
   private createContainer(): HTMLElement {
     const container = document.createElement('div');
-    container.style.cssText = `
-      position: absolute;
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      padding: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 4px;
-      z-index: 10002;
-    `;
+    container.className = 'absolute bg-white border border-gray-200 rounded-md p-2 shadow-lg grid grid-cols-5 gap-1 z-[10002]';
     return container;
   }
 
@@ -63,25 +54,8 @@ export class ColorPicker {
   private render(): void {
     this.colors.forEach(color => {
       const swatch = document.createElement('button');
-      swatch.style.cssText = `
-        width: 24px;
-        height: 24px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background: ${color};
-        cursor: pointer;
-        padding: 0;
-        margin: 0;
-        transition: transform 0.1s;
-      `;
-
-      swatch.onmouseover = () => {
-        swatch.style.transform = 'scale(1.1)';
-      };
-
-      swatch.onmouseout = () => {
-        swatch.style.transform = 'scale(1)';
-      };
+      swatch.className = 'w-6 h-6 border border-gray-200 rounded cursor-pointer p-0 m-0 transition-transform hover:scale-110';
+      swatch.style.backgroundColor = color;
 
       swatch.onclick = () => {
         this.onSelect?.(color);

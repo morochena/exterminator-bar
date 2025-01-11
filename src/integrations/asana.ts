@@ -37,7 +37,7 @@ export class AsanaIntegration implements Integration {
 
   static getSetupInstructions(): string {
     return `
-      <ol>
+      <ol class="list-decimal list-inside">
         <li>Go to Asana Developer Settings <a href="https://app.asana.com/0/my-apps" target="_blank">here</a></li>
         <li>Create a Personal Access Token</li>
         <li>Copy the token and paste it below</li>

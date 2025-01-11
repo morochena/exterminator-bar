@@ -6,6 +6,7 @@ import type {
   LinearConfig 
 } from '../types';
 import { TokenSetupForm } from './TokenSetupForm';
+import '../styles/main.css';
 
 interface FormData extends Partial<BugReport> {
   selectedElement?: VisualFeedback['selectedElement'];
@@ -42,19 +43,7 @@ export class BugReportForm {
 
   private createContainer(): HTMLElement {
     const container = document.createElement('div');
-    container.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.8);
-      z-index: 10001;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    `;
+    container.className = 'fixed inset-0 bg-black/80 z-[10001] flex justify-center items-center p-5';
     return container;
   }
 
@@ -66,7 +55,6 @@ export class BugReportForm {
       { value: 'question', label: 'Question' }
     ];
 
-    // If we have a Linear integration with labelMap, only show types that have corresponding labels
     if (this.config?.integration?.type === 'linear' && this.config.integration.labelMap) {
       return defaultTypes
         .filter(type => this.config?.integration?.type === 'linear' && this.config.integration.labelMap?.[type.value])
@@ -74,7 +62,6 @@ export class BugReportForm {
         .join('');
     }
 
-    // Otherwise show all default types
     return defaultTypes
       .map(type => `<option value="${type.value}">${type.label}</option>`)
       .join('');
@@ -96,42 +83,33 @@ export class BugReportForm {
 
   private render(): void {
     const form = document.createElement('form');
-    form.style.cssText = `
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      width: 100%;
-      max-width: 500px;
-      max-height: 90vh;
-      overflow-y: auto;
-    `;
+    form.className = 'font-sans bg-white p-5 rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto';
 
     form.innerHTML = `
-      <h2 style="margin-top: 0; color: black !important;">Report a Bug</h2>
+      <h2 class="mt-0 mb-4 text-xl font-semibold text-gray-900">Report a Bug</h2>
       
-      <div id="feedback-message" style="display: none; padding: 10px; margin-bottom: 15px; border-radius: 4px;"></div>
+      <div id="feedback-message" class="hidden p-2.5 mb-4 rounded"></div>
 
-      <div class="form-group">
-        <label for="title">Title</label>
-        <input type="text" id="title" required>
+      <div class="mb-4">
+        <label for="title" class="block mb-1 font-medium text-sm text-gray-900">Title</label>
+        <input type="text" id="title" class="exterminator-form-input" required>
       </div>
 
-      <div class="form-group">
-        <label for="description">Description</label>
-        <textarea id="description" rows="4" required></textarea>
+      <div class="mb-4">
+        <label for="description" class="block mb-1 font-medium text-sm text-gray-900">Description</label>
+        <textarea id="description" rows="4" class="exterminator-form-input" required></textarea>
       </div>
 
-      <div class="form-group">
-        <label for="type">Type</label>
-        <select id="type" required>
+      <div class="mb-4">
+        <label for="type" class="block mb-1 font-medium text-sm text-gray-900">Type</label>
+        <select id="type" class="exterminator-form-input" required>
           ${this.getTypeOptions()}
         </select>
       </div>
 
-      <div class="form-group">
-        <label for="severity">Severity</label>
-        <select id="severity" required>
+      <div class="mb-4">
+        <label for="severity" class="block mb-1 font-medium text-sm text-gray-900">Severity</label>
+        <select id="severity" class="exterminator-form-input" required>
           <option value="low">Low</option>
           <option value="medium">Medium</option>
           <option value="high">High</option>
@@ -140,121 +118,51 @@ export class BugReportForm {
       </div>
 
       ${this.formData.visualFeedback?.screenshot ? `
-        <div class="form-group">
-          <label>Screenshot</label>
+        <div class="mb-4">
+          <label class="block mb-1 font-medium text-sm text-gray-900">Screenshot</label>
           <img src="${this.formData.visualFeedback.screenshot}" 
-               style="max-width: 100%; border: 1px solid #ddd; border-radius: 4px;">
+               class="max-w-full border border-gray-200 rounded-md">
         </div>
       ` : ''}
 
       ${this.formData.visualFeedback?.screenRecording ? `
-        <div class="form-group">
-          <label>Screen Recording</label>
+        <div class="mb-4">
+          <label class="block mb-1 font-medium text-sm text-gray-900">Screen Recording</label>
           <video 
             src="${this.formData.visualFeedback.screenRecording.url}"
             controls
-            style="max-width: 100%; border: 1px solid #ddd; border-radius: 4px;">
+            class="max-w-full border border-gray-200 rounded-md">
           </video>
-          <div style="margin-top: 4px; color: #666; font-size: 12px;">
+          <div class="mt-1 text-sm text-gray-500">
             Size: ${(this.formData.visualFeedback.screenRecording.size / (1024 * 1024)).toFixed(1)} MB
           </div>
         </div>
       ` : ''}
 
       ${this.formData.selectedElement ? `
-        <div class="form-group">
-          <label>Selected Element</label>
-          <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; overflow: auto;">
+        <div class="mb-4">
+          <label class="block mb-1 font-medium text-sm text-gray-900">Selected Element</label>
+          <pre class="bg-gray-50 p-2.5 rounded-md overflow-auto text-sm">
 ${JSON.stringify(this.formData.selectedElement, null, 2)}
           </pre>
         </div>
       ` : ''}
 
-      <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+      <div class="flex gap-2.5 justify-end mt-5">
         ${this.hasSavedTokens() ? `
-          <button type="button" class="button" style="background: #dc3545;" onclick="this.closest('form').dispatchEvent(new Event('clear-tokens'))">
+          <button type="button" class="exterminator-btn-danger" onclick="this.closest('form').dispatchEvent(new Event('clear-tokens'))">
             Clear Saved Tokens
           </button>
         ` : ''}
-        <button type="button" class="button" style="background: #6c757d;" onclick="this.closest('form').dispatchEvent(new Event('cancel'))">
+        <button type="button" class="exterminator-btn-secondary" onclick="this.closest('form').dispatchEvent(new Event('cancel'))">
           Cancel
         </button>
-        <button type="submit" id="submit-button" class="button" style="background: #28a745;">
+        <button type="submit" id="submit-button" class="exterminator-btn-primary">
           Submit Report
         </button>
       </div>
     `;
 
-    // Add styles for form elements
-    const style = document.createElement('style');
-    style.textContent = `
-      .form-group {
-        margin-bottom: 15px !important;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-      }
-      .form-group label {
-        display: block !important;
-        margin-bottom: 5px !important;
-        font-weight: 500 !important;
-        color: #000 !important;
-        font-size: 14px !important;
-      }
-      .form-group input[type="text"],
-      .form-group textarea,
-      .form-group select {
-        width: 100% !important;
-        padding: 8px !important;
-        border: 1px solid #ddd !important;
-        border-radius: 4px !important;
-        font-size: 14px !important;
-        line-height: 1.4 !important;
-        box-sizing: border-box !important;
-        margin: 0 !important;
-        font-family: inherit !important;
-        background-color: #fff !important;
-        color: #000 !important;
-      }
-      .form-group input[type="text"]:focus,
-      .form-group textarea:focus,
-      .form-group select:focus {
-        outline: none !important;
-        border-color: #4a90e2 !important;
-        box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2) !important;
-      }
-      .button {
-        border: none !important;
-        padding: 8px 16px !important;
-        border-radius: 4px !important;
-        color: white !important;
-        cursor: pointer !important;
-        font-size: 14px !important;
-        font-family: inherit !important;
-        line-height: 1.4 !important;
-        margin: 0 !important;
-        text-transform: none !important;
-        text-decoration: none !important;
-        text-align: center !important;
-      }
-      .button:hover {
-        opacity: 0.9 !important;
-      }
-      .button:disabled {
-        opacity: 0.6 !important;
-        cursor: not-allowed !important;
-      }
-      .feedback-success {
-        background-color: #d4edda !important;
-        color: #155724 !important;
-        border: 1px solid #c3e6cb !important;
-      }
-      .feedback-error {
-        background-color: #f8d7da !important;
-        color: #721c24 !important;
-        border: 1px solid #f5c6cb !important;
-      }
-    `;
-
-    form.appendChild(style);
     this.container.appendChild(form);
 
     // Add event listeners
@@ -262,7 +170,6 @@ ${JSON.stringify(this.formData.selectedElement, null, 2)}
     form.addEventListener('cancel', () => this.container.remove());
     form.addEventListener('clear-tokens', () => {
       this.clearSavedTokens();
-      // Re-render the form to update the button visibility
       this.container.innerHTML = '';
       this.render();
     });

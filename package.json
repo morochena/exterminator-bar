@@ -7,6 +7,7 @@
   "types": "dist/index.d.ts",
   "unpkg": "dist/index.umd.js",
   "jsdelivr": "dist/index.umd.js",
+  "style": "dist/index.css",
   "files": [
     "dist",
     "README.md"
@@ -28,7 +29,10 @@
   "devDependencies": {
     "@types/fabric": "^5.3.6",
     "@vitest/coverage-c8": "^0.31.1",
+    "autoprefixer": "^10.4.20",
     "jsdom": "^22.1.0",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
     "terser": "^5.37.0",
     "typescript": "^5.0.4",
     "vite": "^4.3.9",

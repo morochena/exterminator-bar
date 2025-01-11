@@ -4,6 +4,7 @@ import { BugReportForm } from './components/BugReportForm';
 import { ColorPicker } from './components/ColorPicker';
 import { IntegrationManager } from './integrations/manager';
 import type { BugReport, VisualFeedback, IntegrationConfig } from './types';
+import './styles/main.css';
 
 // Utility to check if we're in a browser environment
 const isClient = typeof window !== 'undefined' && typeof document !== 'undefined';
@@ -52,7 +53,6 @@ class ExterminatorToolBarInternal {
     
     document.body.appendChild(this.toolbar);
 
-    // Set up hotkey listeners if configured
     if (config?.tools?.screenshot?.hotkey || config?.tools?.screenRecording?.hotkey) {
       this.setupHotkeys();
     }
@@ -92,23 +92,7 @@ class ExterminatorToolBarInternal {
   private createToolbar(): HTMLElement {
     const toolbar = document.createElement('div');
     toolbar.id = 'qa-toolbar';
-    toolbar.style.cssText = `
-      position: fixed !important;
-      bottom: 20px !important;
-      right: 20px !important;
-      background: #ffffff !important;
-      border: 1px solid #e0e0e0 !important;
-      border-radius: 8px !important;
-      padding: 8px !important;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-      display: flex !important;
-      gap: 8px !important;
-      z-index: 2147483647 !important;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-      font-size: 16px !important;
-      line-height: normal !important;
-      box-sizing: border-box !important;
-    `;
+    toolbar.className = 'fixed bottom-5 right-5 bg-white border border-gray-200 rounded-lg p-2 shadow-lg flex gap-2 z-[2147483647] font-sans text-base';
 
     const screenshotBtn = this.createToolbarButton('📸', 'Capture Screenshot');
     screenshotBtn.onclick = this.handleScreenshot.bind(this);
@@ -130,38 +114,7 @@ class ExterminatorToolBarInternal {
     const button = document.createElement('button');
     button.innerHTML = icon;
     button.title = tooltip;
-    button.style.cssText = `
-      border: none !important;
-      background: transparent !important;
-      font-size: 20px !important;
-      cursor: pointer !important;
-      padding: 8px !important;
-      border-radius: 4px !important;
-      transition: background-color 0.2s !important;
-      min-width: unset !important;
-      min-height: unset !important;
-      width: auto !important;
-      height: auto !important;
-      margin: 0 !important;
-      outline: none !important;
-      box-shadow: none !important;
-      text-transform: none !important;
-      font-family: inherit !important;
-      line-height: normal !important;
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      box-sizing: border-box !important;
-    `;
-
-    button.onmouseover = () => {
-      button.style.backgroundColor = '#f0f0f0';
-    };
-
-    button.onmouseout = () => {
-      button.style.backgroundColor = 'transparent';
-    };
-
+    button.className = 'border-none bg-transparent text-xl cursor-pointer p-2 rounded hover:bg-gray-100 transition-colors flex items-center justify-center';
     return button;
   }
 
@@ -321,61 +274,22 @@ class ExterminatorToolBarInternal {
 
   private showAnnotator(): void {
     if (!this.screenshot) return;
-
-    // Keep main toolbar hidden by not showing it here
     
-    // Create annotation container
     const container = document.createElement('div');
-    container.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.8);
-      z-index: 10001;
-      display: flex;
-      flex-direction: column;
-      padding: 10px;
-    `;
+    container.className = 'fixed inset-0 bg-black/80 z-[10001] flex flex-col p-2.5';
 
-    // Create toolbar for annotation tools
     const annotationToolbar = document.createElement('div');
-    annotationToolbar.style.cssText = `
-      display: flex;
-      gap: 10px;
-      margin-bottom: 10px;
-      background: white;
-      padding: 8px;
-      border-radius: 4px;
-      justify-content: space-between;
-      align-items: center;
-    `;
+    annotationToolbar.className = 'flex gap-2.5 mb-2.5 bg-white p-2 rounded justify-between items-center';
 
-    // Initialize annotator first so we can register buttons
     const canvasContainer = document.createElement('div');
-    canvasContainer.style.cssText = `
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      margin: 0;
-      padding: 0;
-      background: #2c2c2c;
-    `;
+    canvasContainer.className = 'flex-1 flex justify-center items-center overflow-hidden m-0 p-0 bg-gray-800';
     container.appendChild(canvasContainer);
 
     this.annotator = new Annotator(canvasContainer, this.screenshot);
 
-    // Create a container for the main tools
     const mainTools = document.createElement('div');
-    mainTools.style.cssText = `
-      display: flex;
-      gap: 10px;
-    `;
+    mainTools.className = 'flex gap-2.5';
 
-    // Add annotation tools
     const tools = [
       { icon: '🔍', mode: 'select', label: 'Select' },
       { icon: '✏️', mode: 'highlight', label: 'Highlight' },
@@ -390,24 +304,17 @@ class ExterminatorToolBarInternal {
       button.onclick = (e) => this.handleAnnotationTool(tool.mode, e);
       mainTools.appendChild(button);
 
-      // Register button with annotator for mode highlighting
       if (tool.mode !== 'color' && tool.mode !== 'done') {
         this.annotator?.registerToolbarButton(tool.mode, button);
       }
     });
 
-    // Create cancel button
     const cancelButton = this.createAnnotationButton('❌', 'Cancel', 'cancel');
     cancelButton.onclick = () => {
-      // Clean up
       this.annotator?.destroy();
       this.annotator = null;
       this.screenshot = null;
-      
-      // Remove annotation container
       container.remove();
-
-      // Show the main toolbar again
       this.toolbar.style.display = 'flex';
     };
 
@@ -422,20 +329,7 @@ class ExterminatorToolBarInternal {
     const button = document.createElement('button');
     button.innerHTML = icon;
     button.title = tooltip;
-    button.style.cssText = `
-      border: 1px solid #ddd;
-      background: white;
-      font-size: 20px;
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 4px;
-      transition: all 0.2s;
-      min-width: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    `;
-
+    button.className = 'border border-gray-200 bg-white text-xl cursor-pointer p-2 rounded min-w-[40px] flex items-center justify-center transition-all hover:bg-gray-50';
     return button;
   }
 }
