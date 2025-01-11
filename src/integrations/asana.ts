@@ -1,6 +1,5 @@
 import type { BugReport } from '../types';
 import type { Integration, IntegrationResponse, AsanaConfig } from '../types';
-import { marked } from 'marked'; 
 
 export class AsanaIntegration implements Integration {
   private token: string;
