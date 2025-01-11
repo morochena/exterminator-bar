@@ -14,9 +14,8 @@ init({
   integration: {
     type: 'asana',
     token: 'your-asana-token',
-    projectId: 'project-id',
-    workspace: 'workspace-id',
-    tags: ['bug']
+    project: 'project-id',
+    defaultSection: 'section-id'
   }
 });
 ```
@@ -26,36 +25,34 @@ init({
 | Option | Type | Required | Description |
 |--------|------|----------|-------------|
 | `token` | string | Yes | Your Asana Personal Access Token |
-| `projectId` | string | Yes | The ID of the project where tasks will be created |
-| `workspace` | string | Yes | The ID of your Asana workspace |
-| `tags` | string[] | No | Array of tags to automatically add to created tasks |
+| `project` | string | Yes | The GID of the project where tasks will be created |
+| `defaultSection` | string | No | Optional GID of a specific section within the project where tasks should be placed |
 
 ## Task Format
 
 When a bug report is submitted, Exterminator Bar will create an Asana task with:
 
-- Name (title) from the bug report
-- Description including:
+- Title derived from the bug report (using the title or first 80 characters of description)
+- HTML-formatted description including:
   - User-provided description
-  - Browser and system information
+  - Browser and system information (browser version, OS, screen resolution, user agent)
   - URL where the bug was reported
-  - Timestamp
+  - Any additional custom fields provided in the report
 - Attachments:
   - Screenshots (if captured) will be uploaded as task attachments
   - Screen recordings (if captured) will be uploaded as task attachments
-- Tags as specified in your configuration
 
 ## Finding Your Asana IDs
 
-### Workspace ID
-1. Go to your Asana workspace in a web browser
-2. The URL will be in the format: `https://app.asana.com/0/workspace/{WORKSPACE_ID}/...`
-3. Copy the `WORKSPACE_ID` from the URL
-
-### Project ID
+### Project GID
 1. Open your project in Asana
-2. The URL will be in the format: `https://app.asana.com/0/{PROJECT_ID}/list`
-3. Copy the `PROJECT_ID` from the URL
+2. The GID is the number in the URL after /0/
+   Example: `https://app.asana.com/0/123456789/list` (here, `123456789` is your project GID)
+
+### Section GID
+1. Open your project and locate the section
+2. The section GID can be found in the URL when viewing or editing the section
+3. It's typically a long numeric string similar to the project GID
 
 ## Security Considerations
 

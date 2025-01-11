@@ -1,3 +1,32 @@
+/**
+ * Asana Integration for creating tasks from bug reports.
+ * 
+ * Example configuration:
+ * ```typescript
+ * {
+ *   type: 'asana',
+ *   token: 'your-asana-token',     // Asana Personal Access Token
+ *   project: '1234567890',         // Asana Project GID
+ *   defaultSection: '1234567890'   // Optional: Section GID to place tasks in
+ * }
+ * ```
+ * 
+ * The integration will create a task in the specified project with:
+ * - A formatted description including all bug report details
+ * - Automatic upload of screenshots and screen recordings as attachments
+ * - Optional placement in a specific section if defaultSection is provided
+ * 
+ * To get an Asana token:
+ * 1. Go to Asana Settings > Apps > Developer Apps > Manage Developer Apps
+ * 2. Create a new app or use an existing one
+ * 3. Create a Personal Access Token
+ * 4. Copy the token and store it securely
+ * 
+ * To get Project/Section GIDs:
+ * 1. Open the project/section in Asana
+ * 2. The GID is the number in the URL after /0/
+ */
+
 import type { BugReport } from '../types';
 import type { Integration, IntegrationResponse, AsanaConfig } from '../types';
 
