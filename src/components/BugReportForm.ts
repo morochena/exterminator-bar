@@ -94,6 +94,8 @@ export class BugReportForm {
     form.innerHTML = `
       <h2 style="margin-top: 0; color: black !important;">Report a Bug</h2>
       
+      <div id="feedback-message" style="display: none; padding: 10px; margin-bottom: 15px; border-radius: 4px;"></div>
+
       <div class="form-group">
         <label for="title">Title</label>
         <input type="text" id="title" required>
@@ -156,7 +158,7 @@ ${JSON.stringify(this.formData.selectedElement, null, 2)}
         <button type="button" class="button" style="background: #6c757d;" onclick="this.closest('form').dispatchEvent(new Event('cancel'))">
           Cancel
         </button>
-        <button type="submit" class="button" style="background: #28a745;">
+        <button type="submit" id="submit-button" class="button" style="background: #28a745;">
           Submit Report
         </button>
       </div>
@@ -215,6 +217,20 @@ ${JSON.stringify(this.formData.selectedElement, null, 2)}
       .button:hover {
         opacity: 0.9 !important;
       }
+      .button:disabled {
+        opacity: 0.6 !important;
+        cursor: not-allowed !important;
+      }
+      .feedback-success {
+        background-color: #d4edda !important;
+        color: #155724 !important;
+        border: 1px solid #c3e6cb !important;
+      }
+      .feedback-error {
+        background-color: #f8d7da !important;
+        color: #721c24 !important;
+        border: 1px solid #f5c6cb !important;
+      }
     `;
 
     form.appendChild(style);
@@ -228,35 +244,64 @@ ${JSON.stringify(this.formData.selectedElement, null, 2)}
   private async handleSubmit(event: Event): Promise<void> {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
+    const submitButton = form.querySelector('#submit-button') as HTMLButtonElement;
+    const feedbackMessage = form.querySelector('#feedback-message') as HTMLDivElement;
     
-    const report: BugReport = {
-      id: crypto.randomUUID(),
-      title: (form.querySelector('#title') as HTMLInputElement).value,
-      description: (form.querySelector('#description') as HTMLTextAreaElement).value,
-      type: (form.querySelector('#type') as HTMLSelectElement).value as BugReport['type'],
-      severity: (form.querySelector('#severity') as HTMLSelectElement).value as BugReport['severity'],
-      status: 'draft',
-      url: window.location.href,
-      createdAt: new Date().toISOString(),
-      environment: {
-        browser: navigator.userAgent,
-        browserVersion: navigator.appVersion,
-        os: navigator.platform,
-        screenResolution: `${window.screen.width}x${window.screen.height}`,
-        viewport: {
-          width: window.innerWidth,
-          height: window.innerHeight
+    // Disable submit button and show loading state
+    submitButton.disabled = true;
+    submitButton.textContent = 'Submitting...';
+    
+    try {
+      const report: BugReport = {
+        id: crypto.randomUUID(),
+        title: (form.querySelector('#title') as HTMLInputElement).value,
+        description: (form.querySelector('#description') as HTMLTextAreaElement).value,
+        type: (form.querySelector('#type') as HTMLSelectElement).value as BugReport['type'],
+        severity: (form.querySelector('#severity') as HTMLSelectElement).value as BugReport['severity'],
+        status: 'draft',
+        url: window.location.href,
+        createdAt: new Date().toISOString(),
+        environment: {
+          browser: navigator.userAgent,
+          browserVersion: navigator.appVersion,
+          os: navigator.platform,
+          screenResolution: `${window.screen.width}x${window.screen.height}`,
+          viewport: {
+            width: window.innerWidth,
+            height: window.innerHeight
+          },
+          userAgent: navigator.userAgent,
+          currentUrl: window.location.href
         },
-        userAgent: navigator.userAgent,
-        currentUrl: window.location.href
-      },
-      reproductionSteps: this.formData.reproductionSteps!,
-      visualFeedback: this.formData.visualFeedback,
-      labels: [],
-      customFields: {}
-    };
+        reproductionSteps: this.formData.reproductionSteps!,
+        visualFeedback: this.formData.visualFeedback,
+        labels: [],
+        customFields: {}
+      };
 
-    await this.onSubmit?.(report);
-    this.container.remove();
+      try {
+        await this.onSubmit?.(report);
+        
+        // Show success message
+        feedbackMessage.textContent = 'Bug report submitted successfully!';
+        feedbackMessage.className = 'feedback-success';
+        feedbackMessage.style.display = 'block';
+        
+        // Close form after a short delay
+        setTimeout(() => {
+          this.container.remove();
+        }, 1500);
+      } catch (error) {
+        // Show error message with the actual error from the integration
+        feedbackMessage.textContent = error instanceof Error ? error.message : 'Failed to submit bug report';
+        feedbackMessage.className = 'feedback-error';
+        feedbackMessage.style.display = 'block';
+        throw error; // Re-throw to trigger the catch block below
+      }
+    } catch (error) {
+      // Re-enable submit button on any error
+      submitButton.disabled = false;
+      submitButton.textContent = 'Submit Report';
+    }
   }
 } 

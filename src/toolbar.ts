@@ -182,10 +182,7 @@ class ExterminatorToolBarInternal {
       if (this.integrationManager) {
         const result = await this.integrationManager.submitReport(report);
         if (!result.success) {
-          console.error('Integration failed:', result.error);
-          this.config?.callbacks?.onError?.(
-            new Error(result.error || 'Failed to submit report')
-          );
+          throw new Error(result.error || 'Failed to submit report');
         }
       } else {
         console.log('No integration configured, skipping submission');
@@ -196,9 +193,7 @@ class ExterminatorToolBarInternal {
       await this.config?.callbacks?.onSubmit?.(report);
     } catch (error) {
       console.error('Failed to submit report:', error);
-      this.config?.callbacks?.onError?.(
-        error instanceof Error ? error : new Error('Failed to submit report')
-      );
+      throw error; // Re-throw the error to be handled by the form
     }
   }
 
